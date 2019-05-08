@@ -2,12 +2,9 @@
 # Created by https://www.gitignore.io/api/java,eclipse,intellij
 # Edit at https://www.gitignore.io/?templates=java,eclipse,intellij
 
-.gradle/
+build/
+### VSCode ###
 .vscode/
-gradle/
-gradlew
-gradlew.bat
-
 
 ### Eclipse ###
 .metadata
@@ -104,6 +101,10 @@ local.properties
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+.gradle/
+gradle/
+gradlew
+gradlew.bat
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,

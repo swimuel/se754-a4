@@ -30,7 +30,18 @@ public class TestGitHubIntegration {
     
     @Test
     public void testMerge() {
-        fail();
+        // set up required information
+        String user = "username";
+        String repoName = "repo";
+        int pullRequestNo = 1;
+        String commitMessage = "merging";
+        GitHubIntegration gitHubUser = new GitHubIntegration();
+        gitHubUser.signIn("username", "password");
+
+        // try the merge
+        int ret = gitHubUser.mergeChanges(user, repoName, pullRequestNo, commitMessage);
+        // if return value is not zero then it failed in some way
+        assertEquals(ret, 0);
     }
 
     @Test

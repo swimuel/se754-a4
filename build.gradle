@@ -1,4 +1,8 @@
+group 'org.jacoco'
+version '1.0-SNAPSHOT'
+
 apply plugin: 'java'
+apply plugin: 'jacoco'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -13,3 +17,12 @@ dependencies {
    testCompile 'junit:junit:4.12'
    compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
 }
+
+jacocoTestReport {
+   reports {
+      xml.enabled true
+      html.enabled false
+   }
+}
+
+check.dependsOn jacocoTestReport

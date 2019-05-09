@@ -38,7 +38,6 @@ public class GitHubIntegration {
     }
 
 
-
     public static void main(String [] args) {
 
         GitHubIntegration user = new GitHubIntegration();
@@ -93,6 +92,4 @@ public class GitHubIntegration {
     public String getUsername() {
         return _username;
     }
-
-
 }

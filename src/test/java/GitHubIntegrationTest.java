@@ -1,5 +1,6 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class GitHubIntegrationTest {
 
@@ -31,15 +32,15 @@ public class GitHubIntegrationTest {
     @Test
     public void shouldMergeCodeAfterCodeReviewApproved() {
         // set up required information
-        String user = "username";
+        String owner = "username";
         String repoName = "repo";
         int pullRequestNo = 1;
         String commitMessage = "merging";
-        GitHubIntegration gitHubUser = new GitHubIntegration();
-        gitHubUser.signIn("username", "password");
-
+        GitHubIntegration mockedGitHubUser = Mockito.mock(GitHubIntegration.class);
+        mockedGitHubUser.signIn("username", "password");
+        Mockito.when(mockedGitHubUser.mergeChanges(owner, repoName, pullRequestNo, commitMessage)).thenReturn(0);
         // try the merge
-        int ret = gitHubUser.mergeChanges(user, repoName, pullRequestNo, commitMessage);
+        int ret = mockedGitHubUser.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
         // if return value is not zero then it failed in some way
         assertEquals(ret, 0);
     }

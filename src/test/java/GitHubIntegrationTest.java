@@ -1,10 +1,10 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class TestGitHubIntegration {
+public class GitHubIntegrationTest {
 
     @Test
-    public void signInTest() {
+    public void shouldStoreUsernamePasswordAfterSignIn() {
         GitHubIntegration user = new GitHubIntegration();
         user.signIn("username", "password");
         // check username has been stored
@@ -12,7 +12,7 @@ public class TestGitHubIntegration {
     } 
     
     @Test
-    public void signOutTest() {
+    public void shouldRemoveUsernamePasswordAfterSignOut() {
         GitHubIntegration user = new GitHubIntegration();
         // need to be signed in to sign out 
         user.signIn("username", "password");
@@ -24,12 +24,12 @@ public class TestGitHubIntegration {
     }
 
     @Test 
-    public void pullRequestFetchTest() {
+    public void shouldFetchSourceCodeOnPullRequest() {
         fail();
     }
     
     @Test
-    public void MergeTest() {
+    public void shouldMergeCodeAfterCodeReviewApproved() {
         // set up required information
         String user = "username";
         String repoName = "repo";
@@ -45,7 +45,7 @@ public class TestGitHubIntegration {
     }
 
     @Test
-    public void postCommentTest() {
+    public void shouldPostCommentsToGitHubPullRequestDiscussionPageWhenReviewersMakeComments() {
         fail();
     }
 

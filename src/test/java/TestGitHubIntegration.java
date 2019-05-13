@@ -4,7 +4,7 @@ import org.junit.Test;
 public class TestGitHubIntegration {
 
     @Test
-    public void testSignIn() {
+    public void signInTest() {
         GitHubIntegration user = new GitHubIntegration();
         user.signIn("username", "password");
         // check username has been stored
@@ -12,7 +12,7 @@ public class TestGitHubIntegration {
     } 
     
     @Test
-    public void testSignOut() {
+    public void signOutTest() {
         GitHubIntegration user = new GitHubIntegration();
         // need to be signed in to sign out 
         user.signIn("username", "password");
@@ -24,12 +24,12 @@ public class TestGitHubIntegration {
     }
 
     @Test 
-    public void testPullRequestFetch() {
+    public void pullRequestFetchTest() {
         fail();
     }
     
     @Test
-    public void testMerge() {
+    public void MergeTest() {
         // set up required information
         String user = "username";
         String repoName = "repo";
@@ -45,7 +45,7 @@ public class TestGitHubIntegration {
     }
 
     @Test
-    public void testPostComment() {
+    public void postCommentTest() {
         fail();
     }
 

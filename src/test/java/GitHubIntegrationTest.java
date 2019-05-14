@@ -12,7 +12,7 @@ public class GitHubIntegrationTest {
         GitHubIntegration user = new GitHubIntegration();
         user.signIn("username", "password");
         // check username has been stored
-        assertEquals(user.getUsername(), "username");
+        assertEquals("username", user.getUsername());
     } 
     
     @Test
@@ -24,7 +24,7 @@ public class GitHubIntegrationTest {
         user.signOut();
         String username = user.getUsername();
         // Check username is no longer stored
-        assertEquals(username, null);
+        assertEquals(null, username);
     }
 
     @Test 
@@ -32,14 +32,14 @@ public class GitHubIntegrationTest {
         GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
         mockedUser.signIn("username", "password");
 
-        Mockito.when(mockedUser.fetchContents("Owner", "repoName", "src")).thenReturn(new HashMap<String, String>(){
+        Mockito.when(mockedUser.fetchSource("Owner", "repoName", "src")).thenReturn(new HashMap<String, String>(){
             private static final long serialVersionUID = 1L;
             {
                 put("test", "passed");
             }
         });
 
-        HashMap<String,String> files = mockedUser.fetchContents("owner", "repoName", "src");
+        HashMap<String,String> files = mockedUser.fetchSource("owner", "repoName", "src");
 
         assertNotEquals(null, files);
     }
@@ -47,7 +47,7 @@ public class GitHubIntegrationTest {
     @Test
     public void shouldReturnNullFromFetchIfUserNotSignedIn() {
         GitHubIntegration user = new GitHubIntegration();
-        HashMap<String, String> files = user.fetchContents("owner", "repoName", "src");
+        HashMap<String, String> files = user.fetchSource("owner", "repoName", "src");
         assertEquals(null, files);
     }
     
@@ -81,12 +81,29 @@ public class GitHubIntegrationTest {
         // try the merge
         int ret = mockedGitHubUser.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
         // if user is not logged in should return -1
-        assertEquals(ret, -1);
+        assertEquals(-1, ret);
     }
 
     @Test
     public void shouldPostCommentsToGitHubPullRequestDiscussionPageWhenReviewersMakeComments() {
-        fail();
+        GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
+        mockedUser.signIn("username", "password");
+
+        Mockito.when(mockedUser.createPullRequestComment("test comment", "owner", "repo", 1)).thenReturn(0);
+
+        int ret = mockedUser.createPullRequestComment("test comment", "owner", "repo", 1);
+
+        assertEquals(0, ret);
     }
 
+    @Test
+    public void shouldNotPostCommentIfUserIsNotSignedIn() {
+        GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
+
+        Mockito.when(mockedUser.createPullRequestComment("test comment", "owner", "repo", 1)).thenReturn(-1);
+
+        int ret = mockedUser.createPullRequestComment("test comment", "owner", "repo", 1);
+
+        assertEquals(-1, ret);
+    }
 }

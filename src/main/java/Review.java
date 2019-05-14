@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Review {
     Results results;
     Developer developer;
@@ -15,6 +18,14 @@ public class Review {
     public void setReviewers(Developer developer, NonDeveloper nonDeveloper) {
         this.developer = developer;
         this.nonDeveloper = nonDeveloper;
+    }
+
+    public void addReviewer(User reviewer) throws UnauthorizedActionException {
+
+    }
+
+    public List<User> getReviewers() {
+        return new ArrayList<>();
     }
 }
 

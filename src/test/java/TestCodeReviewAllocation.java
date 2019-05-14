@@ -1,5 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -12,11 +13,11 @@ public class TestCodeReviewAllocation {
 
     @Before
     public void setup() {
-        review = new Review();
+        review = new Review(Mockito.mock(Results.class));
     }
 
     @Test
-    public void shouldSuccessfullyAddSingleNonDeveloperReviewer() {
+    public void shouldSuccessfullyAddSingleNonDeveloperReviewer() throws UnauthorizedActionException {
         User nonDevReviewer = new User();
         review.addReviewer(nonDevReviewer);
 
@@ -24,13 +25,13 @@ public class TestCodeReviewAllocation {
     }
 
     @Test
-    public void shouldSuccessfullyAddMultipleNonDeveloperReviewers() {
+    public void shouldSuccessfullyAddMultipleNonDeveloperReviewers() throws UnauthorizedActionException{
         User nonDevReviewer1 = new User();
         User nonDevReviewer2 = new User();
         review.addReviewer(nonDevReviewer1);
         review.addReviewer(nonDevReviewer2);
 
-        List<User> reviewers = new ArrayList<User>();
+        List<User> reviewers = new ArrayList();
         reviewers.add(nonDevReviewer1);
         reviewers.add(nonDevReviewer2);
 
@@ -38,7 +39,7 @@ public class TestCodeReviewAllocation {
     }
 
     @Test(expected = UnauthorizedActionException.class)
-    public void shouldNotAllowDeveloperReviewer() {
+    public void shouldNotAllowDeveloperReviewer() throws UnauthorizedActionException{
         User devReviewer = new User();
         review.addReviewer(devReviewer);
     }

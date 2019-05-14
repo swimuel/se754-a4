@@ -1,7 +1,11 @@
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.RepositoryId;
+import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
@@ -83,6 +87,51 @@ public class GitHubIntegration {
         }
         return 0;
     }
+
+    /**
+     * Fetches the source files at the repo called "owner/repo" and returns them in a hashmap with the 
+     * file names as the key and the values as the content which is base64 encoded.
+     * @param owner owner of the repository 
+     * @param repo name of the repository 
+     * @param path path to a specific part of the repo, if null it will get all source
+     * @return hashmap with keys of file names and values of base64 encoded file contents
+     */
+    public HashMap<String, String> fetchContents(String owner, String repo, String path) {
+        ContentsService contentsService = new ContentsService();
+        RepositoryId repoId = new RepositoryId(owner, repo);
+        if(_username == null) {
+            return null; // if user is not logged in can not get contents
+        }
+        contentsService.getClient().setCredentials(_username, _password);
+        HashMap<String, String> source = new HashMap<String, String>();
+        try {
+            // get contents from path
+            List<RepositoryContents> repoContents = contentsService.getContents(repoId, path);
+            int repoContentsSize = repoContents.size();
+            for(int i = 0; i < repoContentsSize; i++) {
+                // if has no content then need to go a level deeper
+                if(repoContents.get(i).getContent() == null){
+                    List<RepositoryContents> subContents = contentsService.getContents(repoId, repoContents.get(i).getPath());
+                    // add the sub contents to the end of the repoContents list
+                    for(RepositoryContents s : subContents){
+                        repoContents.add(s);
+                        // increase repoContentSize so that the loop will iterate through all contents
+                        repoContentsSize++;
+                    }
+                }
+                // if content is non null then it is a file so add its content to the output
+                else if(repoContents.get(i).getContent() != null) {
+                    source.put(repoContents.get(i).getName(), repoContents.get(i).getContent());
+                }
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return source;
+    }
+
 
 
     /**

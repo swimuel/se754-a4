@@ -31,7 +31,7 @@ public class GitHubIntegrationTest {
     public void shouldFetchSourceCodeWhenCalled() {
         GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
         mockedUser.signIn("username", "password");
-
+        // create mock that returns a non empty HashMap, thus imitating finding at least one source file
         Mockito.when(mockedUser.fetchSource("Owner", "repoName", "src", null)).thenReturn(new HashMap<String, String>(){
             private static final long serialVersionUID = 1L;
             {
@@ -48,6 +48,8 @@ public class GitHubIntegrationTest {
     public void shouldReturnNullFromFetchIfUserNotSignedIn() {
         GitHubIntegration user = new GitHubIntegration();
         HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
+
+        // if the user has not signed in then the fetchSource call should return null
         assertEquals(null, files);
     }
 
@@ -55,7 +57,7 @@ public class GitHubIntegrationTest {
     public void shouldFetchSourceFromPullRequest(){
         GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
         mockedUser.signIn("username", "password");
-
+        // create mock that returns a non empty HashMap, thus imitating finding at least one source file
         Mockito.when(mockedUser.fetchSource("Owner", "repoName", "src", null)).thenReturn(new HashMap<String, String>(){
             private static final long serialVersionUID = 1L;
             {
@@ -71,6 +73,7 @@ public class GitHubIntegrationTest {
     public void shouldReturnNullFromPullRequestFetchIfUserNotSignedIn() {
         GitHubIntegration user = new GitHubIntegration();
         HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null);
+        // fetchSourceFromPullRequest should return null if user is not signed in
         assertEquals(null, files);
     }
     
@@ -111,7 +114,7 @@ public class GitHubIntegrationTest {
     public void shouldPostCommentsToGitHubPullRequestDiscussionPageWhenReviewersMakeComments() {
         GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
         mockedUser.signIn("username", "password");
-
+        // make mock object imitate a successful return from the createPullRequestComment method
         Mockito.when(mockedUser.createPullRequestComment("test comment", "owner", "repo", 1)).thenReturn(0);
 
         int ret = mockedUser.createPullRequestComment("test comment", "owner", "repo", 1);
@@ -122,10 +125,31 @@ public class GitHubIntegrationTest {
     @Test
     public void shouldNotPostCommentIfUserIsNotSignedIn() {
         GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
-
+        // make mock object imitate an unsuccessful return from the createPullRequestComment method
         Mockito.when(mockedUser.createPullRequestComment("test comment", "owner", "repo", 1)).thenReturn(-1);
 
         int ret = mockedUser.createPullRequestComment("test comment", "owner", "repo", 1);
+        // should return -1 if the user is not signed in
+        assertEquals(-1, ret);
+    }
+
+
+    @Test
+    public void shouldPostCodeChangeRequestWhenReviewersSubmitReviewContainingTheRequest() {
+        GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
+        mockedUser.signIn("username", "password");
+        Mockito.when(mockedUser.createCodeChangeRequest("owner", "repo", 1, "Please change this")).thenReturn(0);
+
+        int ret = mockedUser.createCodeChangeRequest("owner", "repo", 1, "Please change this");
+
+        assertEquals(0, ret);
+    }
+
+    @Test
+    public void shouldNotPostCodeChangeRequestWhenUserNotSignedIn() {
+        GitHubIntegration user = new GitHubIntegration();
+
+        int ret = user.createCodeChangeRequest("owner", "repo", 1, "Please change this");
 
         assertEquals(-1, ret);
     }

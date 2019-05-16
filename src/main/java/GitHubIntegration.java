@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import org.eclipse.egit.github.core.CommitFile;
 import org.eclipse.egit.github.core.RepositoryContents;
@@ -8,6 +9,14 @@ import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
+
+import org.kohsuke.github.GHPullRequest;
+import org.kohsuke.github.GHPullRequestReview;
+import org.kohsuke.github.GHPullRequestReviewBuilder;
+import org.kohsuke.github.GHPullRequestReviewEvent;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
 
 public class GitHubIntegration {
 
@@ -17,6 +26,11 @@ public class GitHubIntegration {
     public GitHubIntegration() {
         _username = null;
         _password = null;
+    }
+
+    public GitHubIntegration(String username, String password){
+        _username = username;
+        _password = password;
     }
 
 
@@ -187,6 +201,38 @@ public class GitHubIntegration {
             iService.getClient().setCredentials(_username, _password);
             RepositoryId repoId = new RepositoryId(owner, repo);
             iService.createComment(repoId, pullRequestNo, comment);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -2;
+        }
+
+        return 0;
+    }
+
+
+    public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment){
+        if(_username ==  null){
+            return -1;
+        }
+        try {
+            // set up the user login properites
+            Properties props = new Properties();
+            props.setProperty("login", _username);
+            props.setProperty("password", _password);
+
+            // get the repository
+            GitHub gitHub = GitHubBuilder.fromProperties(props).build();
+            GHRepository repository = gitHub.getRepository(owner + "/" + repo);
+
+            // get the pull request 
+            GHPullRequest pullRequest = repository.getPullRequest(pullRequestNo);
+
+            // build a review object
+            GHPullRequestReviewBuilder reviewBuilder = pullRequest.createReview();
+            reviewBuilder.body(comment).event(GHPullRequestReviewEvent.REQUEST_CHANGES);
+
+            // send the review
+            GHPullRequestReview review = reviewBuilder.create();
         } catch (IOException e) {
             e.printStackTrace();
             return -2;

@@ -17,6 +17,7 @@ dependencies {
    testCompile 'junit:junit:4.12'
    compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
    testCompile 'org.mockito:mockito-core:2.1.0'
+   compile 'org.kohsuke:github-api:1.95'
 }
 
 jacocoTestReport {

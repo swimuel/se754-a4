@@ -28,18 +28,18 @@ public class GitHubIntegrationTest {
     }
 
     @Test 
-    public void shouldFetchSourceCodeOnPullRequest() {
+    public void shouldFetchSourceCodeWhenCalled() {
         GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
         mockedUser.signIn("username", "password");
 
-        Mockito.when(mockedUser.fetchSource("Owner", "repoName", "src")).thenReturn(new HashMap<String, String>(){
+        Mockito.when(mockedUser.fetchSource("Owner", "repoName", "src", null)).thenReturn(new HashMap<String, String>(){
             private static final long serialVersionUID = 1L;
             {
                 put("test", "passed");
             }
         });
 
-        HashMap<String,String> files = mockedUser.fetchSource("owner", "repoName", "src");
+        HashMap<String,String> files = mockedUser.fetchSource("owner", "repoName", "src", null);
 
         assertNotEquals(null, files);
     }
@@ -47,7 +47,30 @@ public class GitHubIntegrationTest {
     @Test
     public void shouldReturnNullFromFetchIfUserNotSignedIn() {
         GitHubIntegration user = new GitHubIntegration();
-        HashMap<String, String> files = user.fetchSource("owner", "repoName", "src");
+        HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
+        assertEquals(null, files);
+    }
+
+    @Test
+    public void shouldFetchSourceFromPullRequest(){
+        GitHubIntegration mockedUser = Mockito.mock(GitHubIntegration.class);
+        mockedUser.signIn("username", "password");
+
+        Mockito.when(mockedUser.fetchSource("Owner", "repoName", "src", null)).thenReturn(new HashMap<String, String>(){
+            private static final long serialVersionUID = 1L;
+            {
+                put("test", "passed");
+            }
+        });
+
+        HashMap<String, String> files = mockedUser.fetchSource("brevellnash", "Softeng754Assignment3", null, "testBranch");
+        assertNotEquals(null, files);
+    }
+
+    @Test
+    public void shouldReturnNullFromPullRequestFetchIfUserNotSignedIn() {
+        GitHubIntegration user = new GitHubIntegration();
+        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null);
         assertEquals(null, files);
     }
     
@@ -106,4 +129,5 @@ public class GitHubIntegrationTest {
 
         assertEquals(-1, ret);
     }
+
 }

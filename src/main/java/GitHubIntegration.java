@@ -209,7 +209,15 @@ public class GitHubIntegration {
         return 0;
     }
 
-
+    
+    /**
+     * Used to create a comment with a code request change to a pull reqest with number pullRequestNo
+     * @param owner         String owner of the repository 
+     * @param repo          String name of the repository 
+     * @param pullRequestNo int number of the pull request
+     * @param comment       String comment to add along with the change request.
+     * @return              returns 0 on success, -1 if user is not logged in, and -2 for an exception
+     */
     public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment){
         if(_username ==  null){
             return -1;

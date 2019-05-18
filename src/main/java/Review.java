@@ -51,7 +51,9 @@ public class Review {
         }
 
         boolean success = this.reviewers.remove(reviewer);
-
+        if (success) {
+            this.db.removeReviewer(this, reviewer);
+        }
 
         return success;
     }

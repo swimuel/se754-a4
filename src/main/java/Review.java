@@ -20,7 +20,7 @@ public class Review {
         this.nonDeveloper = nonDeveloper;
     }
 
-    public void addReviewer(User reviewer) throws UnauthorizedActionException {
+    public void addReviewer(User reviewer) throws InvalidReviewerException, UnauthorizedActionException {
 
     }
 

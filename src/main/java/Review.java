@@ -8,6 +8,7 @@ public class Review {
     private User author;
     private boolean isDevEnvironment;
     private List<User> reviewers;
+    private Database db;
 
 
     public Review(Results results, User author, Database db) {
@@ -15,6 +16,7 @@ public class Review {
         this.results = results;
         this.author = author;
         this.isDevEnvironment = true;
+        this.db = db;
     }
 
 
@@ -40,6 +42,7 @@ public class Review {
         }
 
         this.reviewers.add(reviewer);
+        this.db.saveReviewer(this, reviewer);
     }
 
     public List<User> getReviewers() {

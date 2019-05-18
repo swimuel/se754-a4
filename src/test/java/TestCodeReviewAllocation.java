@@ -26,7 +26,7 @@ public class TestCodeReviewAllocation {
         List<User> expectedReviewers = new ArrayList<>();
         expectedReviewers.add(nonDevReviewer);
 
-        assertEquals(nonDevReviewer, review.getReviewers());
+        assertEquals(expectedReviewers, review.getReviewers());
     }
 
     @Test

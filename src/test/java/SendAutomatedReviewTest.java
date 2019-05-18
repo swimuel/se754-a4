@@ -10,6 +10,7 @@ public class SendAutomatedReviewTest {
     NonDeveloper nonDeveloper;
     Review review;
     Results results;
+    User reviewAuthor;
     
 
     @Before
@@ -17,7 +18,8 @@ public class SendAutomatedReviewTest {
         nonDeveloper = Mockito.mock(NonDeveloper.class);
         developer = Mockito.mock(Developer.class);
         results = Mockito.mock(Results.class);
-        review = new Review(results);
+        reviewAuthor = new User(true);
+        review = new Review(results, reviewAuthor);
         review.setReviewers(developer, nonDeveloper);
     }
 

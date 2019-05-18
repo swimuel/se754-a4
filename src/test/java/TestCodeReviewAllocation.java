@@ -18,7 +18,7 @@ public class TestCodeReviewAllocation {
     @Before
     public void setup() {
         db = Mockito.mock(Database.class); // interface then mock it to control what is returned
-        review = new Review(Mockito.mock(Results.class), reviewAuthor, db);
+        review = new Review(Mockito.mock(Results.class), Mockito.mock(Abstraction.class),reviewAuthor, db);
     }
 
     @Test

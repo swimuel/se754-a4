@@ -18,17 +18,17 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 
-public class GitHubIntegration {
+public class GitHubClient {
 
     private String _username;
     private String _password;
 
-    public GitHubIntegration() {
+    public GitHubClient() {
         _username = null;
         _password = null;
     }
 
-    public GitHubIntegration(String username, String password){
+    public GitHubClient(String username, String password){
         _username = username;
         _password = password;
     }

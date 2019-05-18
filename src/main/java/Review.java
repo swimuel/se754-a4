@@ -7,12 +7,14 @@ public class Review {
     private NonDeveloper nonDeveloper;
     private User author;
     private boolean isDevEnvironment;
+    private List<User> reviewers;
 
 
     public Review(Results results, User author) {
+        this.reviewers = new ArrayList<>();
         this.results = results;
         this.author = author;
-        this.isDevEnvironment = false;
+        this.isDevEnvironment = true;
     }
 
 
@@ -29,11 +31,19 @@ public class Review {
     }
 
     public void addReviewer(User reviewer) throws InvalidReviewerException, UnauthorizedActionException {
+        if (!this.isDevEnvironment) {
+            throw new UnauthorizedActionException();
+        }
 
+        if (reviewer.isDeveloper()) {
+            throw new InvalidReviewerException();
+        }
+
+        this.reviewers.add(reviewer);
     }
 
     public List<User> getReviewers() {
-        return new ArrayList<>();
+        return this.reviewers;
     }
 
     public void setDevEnvironment(boolean isDevEnvironment) {

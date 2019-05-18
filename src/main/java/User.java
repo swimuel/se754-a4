@@ -4,4 +4,8 @@ public class User {
     public User(boolean isDeveloper) {
         this.isDeveloper = isDeveloper;
     }
+
+    public boolean isDeveloper() {
+        return this.isDeveloper;
+    }
 }

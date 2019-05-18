@@ -1,4 +1,6 @@
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -11,10 +13,12 @@ public class TestCodeReviewAllocation {
 
     Review review;
     User reviewAuthor;
+    Database db;
 
     @Before
     public void setup() {
-        review = new Review(Mockito.mock(Results.class), reviewAuthor);
+        db = Mockito.mock(Database.class); // interface then mock it to control what is returned
+        review = new Review(Mockito.mock(Results.class), reviewAuthor, db);
     }
 
     @Test
@@ -27,6 +31,7 @@ public class TestCodeReviewAllocation {
         expectedReviewers.add(nonDevReviewer);
 
         assertEquals(expectedReviewers, review.getReviewers());
+        Mockito.verify(db, Mockito.times(1)).saveReviewer(Mockito.eq(review), Mockito.any(User.class));
     }
 
     @Test
@@ -42,13 +47,20 @@ public class TestCodeReviewAllocation {
         reviewers.add(nonDevReviewer2);
 
         assertEquals(reviewers, review.getReviewers());
+        Mockito.verify(db, Mockito.times(2)).saveReviewer(Mockito.eq(review), Mockito.any(User.class));
     }
 
     @Test(expected = InvalidReviewerException.class)
     public void shouldNotAllowDeveloperReviewer()
             throws InvalidReviewerException, UnauthorizedActionException {
+
         User devReviewer = new User(true);
-        review.addReviewer(devReviewer);
+        try {
+            review.addReviewer(devReviewer);
+        } catch (InvalidReviewerException e) {
+            Mockito.verify(db, Mockito.never()).saveReviewer(Mockito.eq(review), Mockito.any(User.class));
+            throw new InvalidReviewerException();
+        }
     }
 
     @Test(expected = UnauthorizedActionException.class)
@@ -56,6 +68,11 @@ public class TestCodeReviewAllocation {
             throws UnauthorizedActionException, InvalidReviewerException {
         review.setDevEnvironment(false);
         User nonDevReviewer = new User(false);
-        review.addReviewer(nonDevReviewer);
+        try {
+            review.addReviewer(nonDevReviewer);
+        } catch (UnauthorizedActionException e) {
+            Mockito.verify(db, Mockito.never()).saveReviewer(Mockito.eq(review), Mockito.any(User.class));
+            throw new UnauthorizedActionException();
+        }
     }
 }

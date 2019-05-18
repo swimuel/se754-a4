@@ -10,7 +10,7 @@ public class Review {
     private List<User> reviewers;
 
 
-    public Review(Results results, User author) {
+    public Review(Results results, User author, Database db) {
         this.reviewers = new ArrayList<>();
         this.results = results;
         this.author = author;

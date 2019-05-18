@@ -19,7 +19,7 @@ public class SendAutomatedReviewTest {
         developer = Mockito.mock(Developer.class);
         results = Mockito.mock(Results.class);
         reviewAuthor = new User(true);
-        review = new Review(results, reviewAuthor);
+        review = new Review(results, reviewAuthor, Mockito.mock(Database.class));
         review.setReviewers(developer, nonDeveloper);
     }
 

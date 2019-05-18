@@ -45,6 +45,17 @@ public class Review {
         this.db.saveReviewer(this, reviewer);
     }
 
+    public boolean removeReviewer(User reviewer) throws UnauthorizedActionException {
+        if (!this.isDevEnvironment) {
+            throw new UnauthorizedActionException();
+        }
+
+        boolean success = this.reviewers.remove(reviewer);
+
+
+        return success;
+    }
+
     public List<User> getReviewers() {
         return this.reviewers;
     }

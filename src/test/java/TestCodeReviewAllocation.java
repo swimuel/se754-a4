@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TestCodeReviewAllocation {
 
@@ -59,7 +61,7 @@ public class TestCodeReviewAllocation {
             review.addReviewer(devReviewer);
         } catch (InvalidReviewerException e) {
             Mockito.verify(db, Mockito.never()).saveReviewer(Mockito.eq(review), Mockito.any(User.class));
-            throw new InvalidReviewerException();
+            throw e;
         }
     }
 
@@ -72,7 +74,47 @@ public class TestCodeReviewAllocation {
             review.addReviewer(nonDevReviewer);
         } catch (UnauthorizedActionException e) {
             Mockito.verify(db, Mockito.never()).saveReviewer(Mockito.eq(review), Mockito.any(User.class));
-            throw new UnauthorizedActionException();
+            throw e;
+        }
+    }
+
+    @Test
+    public void shouldSuccessfullyDeleteExistingReviewer() throws UnauthorizedActionException, InvalidReviewerException {
+        User nonDevReviewer = new User(false);
+        review.addReviewer(nonDevReviewer);
+
+        boolean success = review.removeReviewer(nonDevReviewer);
+
+        assertTrue(success);
+        assertEquals(new ArrayList<User>(), review.getReviewers());
+        Mockito.verify(db, Mockito.times(1)).removeReviewer(Mockito.eq(review), Mockito.any(User.class));
+    }
+
+    @Test
+    public void shouldFailToDeleteNonExistingReviewer() throws UnauthorizedActionException, InvalidReviewerException {
+        User nonDevReviewer = new User(false);
+        review.addReviewer(nonDevReviewer);
+
+        User nonExistentUser = new User(false);
+        boolean success = review.removeReviewer(nonExistentUser);
+
+        assertFalse(success);
+        assertEquals(1, review.getReviewers().size());
+        Mockito.verify(db, Mockito.never()).removeReviewer(Mockito.eq(review), Mockito.any(User.class));
+    }
+
+    @Test(expected = UnauthorizedActionException.class)
+    public void shouldNotAllowNonDeveloperToRemoveReviewer() throws UnauthorizedActionException, InvalidReviewerException {
+        User nonDevReviewer = new User(false);
+        review.addReviewer(nonDevReviewer);
+        review.setDevEnvironment(false);
+
+        try {
+            review.removeReviewer(nonDevReviewer);
+        } catch (UnauthorizedActionException e) {
+            assertEquals(1, review.getReviewers().size());
+            Mockito.verify(db, Mockito.never()).removeReviewer(Mockito.eq(review), Mockito.any(User.class));
+            throw e;
         }
     }
 }

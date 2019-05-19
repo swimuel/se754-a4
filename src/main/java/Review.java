@@ -19,8 +19,6 @@ public class Review {
         this.db = db;
     }
 
-
-
 	public void sendAutomatedResults(Results autoResults) {
         this.developer.sendNonDev(results, nonDeveloper);
     } 
@@ -56,6 +54,10 @@ public class Review {
         }
 
         return success;
+    }
+
+    public void submitReview(User reviewer) {
+
     }
 
     public List<User> getReviewers() {

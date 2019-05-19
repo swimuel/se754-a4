@@ -13,8 +13,18 @@ public class ReviewAllocationCountTest {
     }
 
     @Test
-    public void testCountInitialisedToZero() {
+    public void reviewCountShouldBeInitialisedToZero() {
         User user = new User(false);
         assertEquals(0, user.getReviewCount());
+    }
+
+    @Test
+    public void reviewCountShouldIncrementWhenReviewCompletedByUser() {
+        User reviewer = new User(false);
+        Review review = new Review(Mockito.mock(Results.class), reviewer, db);
+
+        review.submitReview(reviewer);
+
+        assertEquals(1, reviewer.getReviewCount());
     }
 }

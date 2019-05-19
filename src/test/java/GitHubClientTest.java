@@ -27,6 +27,16 @@ public class GitHubClientTest {
         assertEquals(null, username);
     }
 
+    @Test(expected = BadLoginException.class)
+    public void shouldThrowExceptionWhenUsernameAndPasswordAreIncorrect() {
+        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
+
+        Mockito.when(mockedUser.signIn("username", "badPassword")).thenThrow(new BadLoginException());
+
+        mockedUser.signIn("username", "badPassword");
+
+    }
+
     @Test 
     public void shouldFetchSourceCodeWhenCalled() {
         GitHubClient mockedUser = Mockito.mock(GitHubClient.class);

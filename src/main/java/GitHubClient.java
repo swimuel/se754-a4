@@ -27,7 +27,7 @@ public class GitHubClient {
     public GitHubClient() {
         _username = null;
         _password = null;
-        _mostRecentPullRequestNo = 1;
+        _mostRecentPullRequestNo = 0;
     }
 
     public GitHubClient(String username, String password) {
@@ -152,7 +152,7 @@ public class GitHubClient {
         return source;
     }
 
-    
+
     /**
      * Creates a swing worker class that will listen for a pull request on a background thread.
      * When there is a pull requeset it will fetch the source code and put it in the _sourceFiles 

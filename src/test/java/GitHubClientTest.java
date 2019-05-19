@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 public class GitHubClientTest {
 
     @Test
-    public void shouldStoreUsernamePasswordAfterSignIn() {
+    public void shouldStoreUsernamePasswordAfterSignIn() throws BadLoginException {
         GitHubClient user = new GitHubClient();
         user.signIn("username", "password");
         // check username has been stored
@@ -16,7 +16,7 @@ public class GitHubClientTest {
     } 
     
     @Test
-    public void shouldRemoveUsernamePasswordAfterSignOut() {
+    public void shouldRemoveUsernamePasswordAfterSignOut() throws BadLoginException {
         GitHubClient user = new GitHubClient();
         // need to be signed in to sign out 
         user.signIn("username", "password");
@@ -28,17 +28,16 @@ public class GitHubClientTest {
     }
 
     @Test(expected = BadLoginException.class)
-    public void shouldThrowExceptionWhenUsernameAndPasswordAreIncorrect() {
+    public void shouldThrowExceptionWhenUsernameAndPasswordAreIncorrect() throws BadLoginException {
         GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
 
-        Mockito.when(mockedUser.signIn("username", "badPassword")).thenThrow(new BadLoginException());
-
+        Mockito.doThrow(new BadLoginException()).when(mockedUser).signIn("username", "badPassword");
+        
         mockedUser.signIn("username", "badPassword");
-
     }
 
     @Test 
-    public void shouldFetchSourceCodeWhenCalled() {
+    public void shouldFetchSourceCodeWhenCalled() throws BadLoginException {
         GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
         mockedUser.signIn("username", "password");
         // create mock that returns a non empty HashMap, thus imitating finding at least one source file

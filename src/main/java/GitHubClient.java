@@ -9,6 +9,7 @@ import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
+import org.eclipse.egit.github.core.service.RepositoryService;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHPullRequestReview;
 import org.kohsuke.github.GHPullRequestReviewBuilder;
@@ -42,9 +43,10 @@ public class GitHubClient {
      * @param username username fo the user
      * @param password user password
      */
-    public void signIn(String username, String password) {
+    public void signIn(String username, String password) throws BadLoginException {
         _username = username;
         _password = password;
+
     }
 
     /**

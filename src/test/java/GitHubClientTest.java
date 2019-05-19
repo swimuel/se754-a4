@@ -32,8 +32,13 @@ public class GitHubClientTest {
         GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
 
         Mockito.doThrow(new BadLoginException()).when(mockedUser).signIn("username", "badPassword");
-        
+
         mockedUser.signIn("username", "badPassword");
+    }
+
+    @Test
+    public void shouldNotStoreUsernameIfThereIsABadLoginException() {
+        fail();
     }
 
     @Test 

@@ -8,4 +8,8 @@ public class User {
     public boolean isDeveloper() {
         return this.isDeveloper;
     }
+
+    public int getReviewCount() {
+        return 1;
+    }
 }

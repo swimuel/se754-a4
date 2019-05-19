@@ -1,8 +1,10 @@
 public class User {
     private boolean isDeveloper;
+    private int reviewCount;
 
     public User(boolean isDeveloper) {
         this.isDeveloper = isDeveloper;
+        this.reviewCount = 0;
     }
 
     public boolean isDeveloper() {
@@ -10,6 +12,6 @@ public class User {
     }
 
     public int getReviewCount() {
-        return 1;
+        return this.reviewCount;
     }
 }

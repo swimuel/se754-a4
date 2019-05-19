@@ -14,4 +14,8 @@ public class User {
     public int getReviewCount() {
         return this.reviewCount;
     }
+
+    public void incrementReviewCount() {
+        this.reviewCount++;
+    }
 }

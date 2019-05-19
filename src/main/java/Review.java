@@ -57,7 +57,7 @@ public class Review {
     }
 
     public void submitReview(User reviewer) {
-
+        reviewer.incrementReviewCount();
     }
 
     public List<User> getReviewers() {

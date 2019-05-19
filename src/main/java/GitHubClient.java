@@ -9,7 +9,6 @@ import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
-
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHPullRequestReview;
 import org.kohsuke.github.GHPullRequestReviewBuilder;
@@ -22,17 +21,20 @@ public class GitHubClient {
 
     private String _username;
     private String _password;
+    private int _mostRecentPullRequestNo;
+    private HashMap<String, String> _sourceFiles;
 
     public GitHubClient() {
         _username = null;
         _password = null;
+        _mostRecentPullRequestNo = 1;
     }
 
-    public GitHubClient(String username, String password){
+    public GitHubClient(String username, String password) {
+        this();
         _username = username;
         _password = password;
     }
-
 
     /**
      * Sets the fields for that user so that they can be used to perform other tasks
@@ -45,7 +47,6 @@ public class GitHubClient {
         _password = password;
     }
 
-
     /**
      * Removes the username and password so that any further user actions will fail
      */
@@ -54,7 +55,6 @@ public class GitHubClient {
         _password = null;
     }
 
-
     /**
      * Fetches the source files at the repo called "owner/repo" and returns them in
      * a hashmap with the file names as the key and the values as the content which
@@ -62,12 +62,12 @@ public class GitHubClient {
      * 
      * @param owner  string owner of the repository
      * @param repo   string name of the repository
-     * @param path   string path to a specific part of the repo, if null it will get all
-     *               source
-     * @param branch the name of the branch to get the source from, if it is null it will get 
-     *               source from the master branch
-     * @return       hashmap with keys of file names and values of base64 encoded file
-     *               contents or null if error
+     * @param path   string path to a specific part of the repo, if null it will get
+     *               all source
+     * @param branch the name of the branch to get the source from, if it is null it
+     *               will get source from the master branch
+     * @return hashmap with keys of file names and values of base64 encoded file
+     *         contents or null if error
      */
     public HashMap<String, String> fetchSource(String owner, String repo, String path, String branch) {
         if (_username == null) {
@@ -97,6 +97,7 @@ public class GitHubClient {
                 // if content is non null then it is a file so add its content to the output
                 else if (repoContents.get(i).getContent() != null) {
                     source.put(repoContents.get(i).getPath(), repoContents.get(i).getContent());
+                    _sourceFiles.put(repoContents.get(i).getPath(), repoContents.get(i).getContent());
                 }
             }
 
@@ -107,20 +108,21 @@ public class GitHubClient {
         return source;
     }
 
-
     /**
-     * Grabs the source code that was changed in the pull request with number 'pullRequestNo'
-     * from the repository owned by 'owner' called 'repo' and on branch 'branch'. The source is 
-     * returned in a hashmap with the full file name as the key and the value being the base64 
-     * encoded content of the file.
-     * @param owner         String owner of repository 
-     * @param repo          String name of repository 
+     * Grabs the source code that was changed in the pull request with number
+     * 'pullRequestNo' from the repository owned by 'owner' called 'repo' and on
+     * branch 'branch'. The source is returned in a hashmap with the full file name
+     * as the key and the value being the base64 encoded content of the file.
+     * 
+     * @param owner         String owner of repository
+     * @param repo          String name of repository
      * @param pullRequestNo int number representing the pull request
      * @param branch        String name of the branch to get the source from
-     * @return              HashMap with the keys as full names of the files and values as 
-     *                      the base64 encoded content of the file.
+     * @return HashMap with the keys as full names of the files and values as the
+     *         base64 encoded content of the file.
      */
-    public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo, String branch){
+    public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo,
+            String branch) {
         if (_username == null) {
             return null; // if user is not logged in can not get contents
         }
@@ -134,11 +136,12 @@ public class GitHubClient {
 
         try {
             List<CommitFile> files = prService.getFiles(repoId, pullRequestNo);
-            for(CommitFile c : files){
+            for (CommitFile c : files) {
                 List<RepositoryContents> fileContents = contentsService.getContents(repoId, c.getFilename(), branch);
-                for(RepositoryContents r : fileContents){
+                for (RepositoryContents r : fileContents) {
                     source.put(c.getFilename(), r.getContent());
-                }         
+                    _sourceFiles.put(c.getFilename(), r.getContent());
+                }
             }
 
         } catch (IOException e) {
@@ -147,6 +150,26 @@ public class GitHubClient {
         }
 
         return source;
+    }
+
+    
+    /**
+     * Creates a swing worker class that will listen for a pull request on a background thread.
+     * When there is a pull requeset it will fetch the source code and put it in the _sourceFiles 
+     * field of this class.
+     * 
+     * @param owner String owner of repo to listen on 
+     * @param repo  String name of the repository
+     * @return 0 on success or -1 if the user is not logged in
+     */
+    public int startListeningForPullRequests(String owner, String repo) {
+        if (_username == null) {
+            return -1;
+        }
+        PullRequestListener pullRequestListener = new PullRequestListener(this, _username, _password, owner, repo,
+                _mostRecentPullRequestNo);
+        pullRequestListener.execute();
+        return 0;
     }
 
 
@@ -255,5 +278,30 @@ public class GitHubClient {
      */
     public String getUsername() {
         return _username;
+    }
+
+    /**
+     * Set the most recent pull request number 
+     * @param pullNo the most recent pull request number
+     */
+    public void setMostRecentPullRequestNo(int pullNo){
+        _mostRecentPullRequestNo = pullNo;
+    }
+
+    /**
+     * Get all of the currently stored source files as a 
+     * HashMap
+     * @return HashMap<String, String> of all stored source files
+     */
+    public HashMap<String, String> getSourceFiles() {
+        return _sourceFiles;
+    }
+
+    /**
+     * Remove all of the currently stored source files
+     * from the hashmap
+     */
+    public void clearSourceFiles() {
+        _sourceFiles.clear();
     }
 }

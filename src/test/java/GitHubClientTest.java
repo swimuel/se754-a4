@@ -76,7 +76,20 @@ public class GitHubClientTest {
         // fetchSourceFromPullRequest should return null if user is not signed in
         assertEquals(null, files);
     }
-    
+
+    @Test(timeout = 10000)
+    public void shouldReturnImmediatelyWhenStartingListeningForPullRequests() {
+        GitHubClient user = new GitHubClient("username", "password");
+        user.startListeningForPullRequests("owner", "repo");
+    }
+
+    @Test
+    public void shouldReturnNegativeOneIfUserIsNotLoggedInAndTriesToListenForPullRequests() {
+        GitHubClient user = new GitHubClient();
+        int ret = user.startListeningForPullRequests("owner", "repo");
+        assertEquals(-1, ret);
+    }
+
     @Test
     public void shouldMergeCodeAfterCodeReviewApproved() {
         // set up required information

@@ -3,33 +3,28 @@ package CodeInspection;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-
-import static org.junit.Assert.*;
 
 public class TestAutomatedLinting {
-    SourceCode originalCode;
-    SourceCode lintedCode;
     Linter linter;
 
     @Before
     public void setup(){
-        originalCode = Mockito.mock(SourceCode.class);
-        linter = Mockito.mock(Linter.class);
+        linter = new Linter();
     }
 
     @Test
     public void lintSourceCode(){
-        Mockito.doReturn(lintedCode).when(linter).lint(originalCode);
+        SourceCode lintedCode = new SourceCode("public class test {}\n");
+        SourceCode originalCode = new SourceCode("public class test  { }");
         SourceCode receivedLintedCode = linter.lint(originalCode);
-        Assert.assertEquals(receivedLintedCode, lintedCode);
+        Assert.assertEquals(lintedCode.getValue(), receivedLintedCode.getValue());
     }
 
     @Test
     public void alreadyLintedSourceCode(){
-        Mockito.doReturn(originalCode).when(linter).lint(originalCode);
+        SourceCode originalCode = new SourceCode("public class test {}\n");
         SourceCode receivedLintedCode = linter.lint(originalCode);
-        Assert.assertEquals(receivedLintedCode, originalCode);
+        Assert.assertEquals(originalCode.getValue(), receivedLintedCode.getValue());
     }
 
 }

@@ -58,6 +58,7 @@ public class Review {
 
     public void submitReview(User reviewer) {
         reviewer.incrementReviewCount();
+        this.db.persistReviewer(reviewer);
     }
 
     public List<User> getReviewers() {

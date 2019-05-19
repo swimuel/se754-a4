@@ -25,7 +25,7 @@
 //     public void sendAutomatedReview() {
 //         Mockito.doReturn(results).when(nonDeveloper).fetchResults();
 //         review.sendAutomatedResults(results);
-//         Results recievedReviewResults = nonDeveloper.fetchResults(); 
-//         assertEquals(results, recievedReviewResults);
+//         Results receivedReviewResults = nonDeveloper.fetchResults(); 
+//         assertEquals(results, receivedReviewResults);
 //     }
 // }

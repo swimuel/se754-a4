@@ -29,31 +29,31 @@ public class SendAutomatedReviewTest {
     public void sendAutomatedReview() {
         Mockito.doReturn(results).when(nonDeveloper).fetchResults();
         review.sendAutomatedResults(results);
-        Results recievedReviewResults = nonDeveloper.fetchResults(); 
-        assertEquals(results, recievedReviewResults);
+        Results receivedReviewResults = nonDeveloper.fetchResults(); 
+        assertEquals(results, receivedReviewResults);
     }
 
     @Test
     public void sendAbstraction() {
         Mockito.doReturn(abstraction).when(nonDeveloper).fetchAbstraction();
         review.sendAbstraction(abstraction);
-        Abstraction recievedAbstraction = nonDeveloper.fetchAbstraction(); 
-        assertEquals(abstraction, recievedAbstraction);
+        Abstraction receivedAbstraction = nonDeveloper.fetchAbstraction(); 
+        assertEquals(abstraction, receivedAbstraction);
     }
 
     // @Test
     // public void performHighLevelReview() {
     //     Mockito.doReturn(abstraction).when(nonDeveloper).fetchResults();
     //     review.sendAutomatedResults(results);
-    //     Results recievedReviewResults = nonDeveloper.fetchResults(); 
-    //     assertEquals(results, recievedReviewResults);
+    //     Results receivedReviewResults = nonDeveloper.fetchResults(); 
+    //     assertEquals(results, receivedReviewResults);
     // }
 
     // @Test
     // public void sendHighLevelReview() {
     //     Mockito.doReturn(results).when(nonDeveloper).fetchResults();
     //     review.sendAutomatedResults(results);
-    //     Results recievedReviewResults = nonDeveloper.fetchResults(); 
-    //     assertEquals(results, recievedReviewResults);
+    //     Results receivedReviewResults = nonDeveloper.fetchResults(); 
+    //     assertEquals(results, receivedReviewResults);
     // }
 }

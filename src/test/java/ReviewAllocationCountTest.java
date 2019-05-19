@@ -19,12 +19,14 @@ public class ReviewAllocationCountTest {
     }
 
     @Test
-    public void reviewCountShouldIncrementWhenReviewCompletedByUser() {
+    public void reviewCountShouldIncrementAndDBShouldUpdateWhenReviewCompleted() {
         User reviewer = new User(false);
-        Review review = new Review(Mockito.mock(Results.class), reviewer, db);
+        int reviewCount = reviewer.getReviewCount();
 
+        Review review = new Review(Mockito.mock(Results.class), reviewer, db);
         review.submitReview(reviewer);
 
-        assertEquals(1, reviewer.getReviewCount());
+        assertEquals(reviewCount + 1, reviewer.getReviewCount());
+        Mockito.verify(db, Mockito.times(1)).persistReviewer(reviewer);
     }
 }

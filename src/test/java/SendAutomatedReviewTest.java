@@ -3,23 +3,24 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import user.Developer;
 
 public class SendAutomatedReviewTest {
 
-    Developer developer;
-    NonDeveloper nonDeveloper;
+    DeveloperSide developer;
+    NonDeveloperSide nonDeveloper;
     Review review;
     Results results;
-    User reviewAuthor;
+    Developer reviewAuthor;
     
 
     @Before
     public void setup() {
-        nonDeveloper = Mockito.mock(NonDeveloper.class);
-        developer = Mockito.mock(Developer.class);
+        nonDeveloper = Mockito.mock(NonDeveloperSide.class);
+        developer = Mockito.mock(DeveloperSide.class);
         results = Mockito.mock(Results.class);
-        reviewAuthor = new User(true);
-        review = new Review(results, reviewAuthor, Mockito.mock(Database.class));
+        reviewAuthor = new Developer();
+        review = new Review(results, reviewAuthor);
         review.setReviewers(developer, nonDeveloper);
     }
 

@@ -31,12 +31,6 @@ public class GitHubClient {
         _mostRecentPullRequestNo = 0;
     }
 
-    public GitHubClient(String username, String password) {
-        this();
-        _username = username;
-        _password = password;
-    }
-
     /**
      * Sets the fields for that user so that they can be used to perform other tasks
      * 
@@ -47,6 +41,21 @@ public class GitHubClient {
         _username = username;
         _password = password;
 
+        RepositoryService repoService = new RepositoryService();
+        repoService.getClient().setCredentials(_username, _password);
+
+        // try to get a repository, if it fails then the username/password are incorrect
+        try{
+            RepositoryId repoId = new RepositoryId("eclipse", "egit-github");
+            repoService.getRepository(repoId);
+        }
+        catch(IOException e) {
+            // set username/password back to null and throw a new exception
+            _username = null;
+            _password = null;
+            throw new BadLoginException();
+        }
+        // if no exception then the user is logged in
     }
 
     /**
@@ -154,7 +163,6 @@ public class GitHubClient {
         return source;
     }
 
-
     /**
      * Creates a swing worker class that will listen for a pull request on a background thread.
      * When there is a pull requeset it will fetch the source code and put it in the _sourceFiles 
@@ -173,7 +181,6 @@ public class GitHubClient {
         pullRequestListener.execute();
         return 0;
     }
-
 
     /**
      * Used to merge a pull request automatically. If the user it not logged in it
@@ -207,7 +214,6 @@ public class GitHubClient {
         return 0;
     }
 
-
     /**
      * Puts a comment on the pull request with id of pullRequestNumber
      * @param comment       the string comment to add to the pull request
@@ -233,8 +239,7 @@ public class GitHubClient {
 
         return 0;
     }
-
-    
+  
     /**
      * Used to create a comment with a code request change to a pull reqest with number pullRequestNo
      * @param owner         String owner of the repository 

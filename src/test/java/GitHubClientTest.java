@@ -38,7 +38,17 @@ public class GitHubClientTest {
 
     @Test
     public void shouldNotStoreUsernameIfThereIsABadLoginException() {
-        fail();
+        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
+        try {
+            Mockito.doThrow(new BadLoginException()).when(mockedUser).signIn("username", "badPassword");
+
+            mockedUser.signIn("username", "badPassword");
+        }
+        catch(BadLoginException e) { 
+            // check that the username was not stored after the login attempt
+            String username = mockedUser.getUsername();
+            assertEquals(null, username);
+        }
     }
 
     @Test 
@@ -68,18 +78,18 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldFetchSourceFromPullRequest(){
+    public void shouldFetchSourceFromPullRequest() throws BadLoginException {
         GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
         mockedUser.signIn("username", "password");
         // create mock that returns a non empty HashMap, thus imitating finding at least one source file
-        Mockito.when(mockedUser.fetchSource("Owner", "repoName", "src", null)).thenReturn(new HashMap<String, String>(){
+        Mockito.when(mockedUser.fetchSource("owner", "repoName", "src", null)).thenReturn(new HashMap<String, String>(){
             private static final long serialVersionUID = 1L;
             {
                 put("test", "passed");
             }
         });
 
-        HashMap<String, String> files = mockedUser.fetchSource("brevellnash", "Softeng754Assignment3", null, "testBranch");
+        HashMap<String, String> files = mockedUser.fetchSource("owner", "repoName", "src", null);
         assertNotEquals(null, files);
     }
 
@@ -92,9 +102,10 @@ public class GitHubClientTest {
     }
 
     @Test(timeout = 10000)
-    public void shouldReturnImmediatelyWhenStartingListeningForPullRequests() {
-        GitHubClient user = new GitHubClient("username", "password");
-        user.startListeningForPullRequests("owner", "repo");
+    public void shouldReturnImmediatelyWhenStartingListeningForPullRequests() throws BadLoginException {
+        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
+        mockedUser.signIn("username", "password");
+        mockedUser.startListeningForPullRequests("owner", "repo");
     }
 
     @Test
@@ -105,7 +116,7 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldMergeCodeAfterCodeReviewApproved() {
+    public void shouldMergeCodeAfterCodeReviewApproved() throws BadLoginException {
         // set up required information
         String owner = "username";
         String repoName = "repo";
@@ -138,7 +149,8 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldPostCommentsToGitHubPullRequestDiscussionPageWhenReviewersMakeComments() {
+    public void shouldPostCommentsToGitHubPullRequestDiscussionPageWhenReviewersMakeComments()
+            throws BadLoginException {
         GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
         mockedUser.signIn("username", "password");
         // make mock object imitate a successful return from the createPullRequestComment method
@@ -162,7 +174,7 @@ public class GitHubClientTest {
 
 
     @Test
-    public void shouldPostCodeChangeRequestWhenReviewersSubmitReviewContainingTheRequest() {
+    public void shouldPostCodeChangeRequestWhenReviewersSubmitReviewContainingTheRequest() throws BadLoginException {
         GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
         mockedUser.signIn("username", "password");
         Mockito.when(mockedUser.createCodeChangeRequest("owner", "repo", 1, "Please change this")).thenReturn(0);

@@ -3,7 +3,6 @@ package user;
 import java.util.UUID;
 
 public class Reviewer extends User {
-    private UUID id;
     private int reviewCount;
 
     public Reviewer() {
@@ -11,9 +10,8 @@ public class Reviewer extends User {
     }
 
     public Reviewer(UUID id, int reviewCount) {
-        super(false);
+        super(id);
         this.reviewCount = reviewCount;
-        this.id = id;
     }
 
     public int getReviewCount() {

@@ -1,13 +1,11 @@
 package user;
 
+import java.util.UUID;
+
 public abstract class User {
-    private boolean isDeveloper;
+    private UUID id;
 
-    protected User(boolean isDeveloper) {
-        this.isDeveloper = isDeveloper;
-    }
-
-    public boolean isDeveloper() {
-        return this.isDeveloper;
+    protected User(UUID id) {
+        this.id = id;
     }
 }

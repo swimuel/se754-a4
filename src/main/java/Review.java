@@ -48,10 +48,6 @@ public class Review {
         return success;
     }
 
-    public void submitReview(Reviewer reviewer) {
-        reviewer.incrementReviewCount();
-    }
-
     public List<Reviewer> getReviewers() {
         return this.reviewers;
     }

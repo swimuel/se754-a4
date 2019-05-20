@@ -1,9 +1,11 @@
 package user;
 
+import java.util.UUID;
+
 public class Developer extends User {
 
     public Developer() {
-        super(true);
+        super(UUID.randomUUID());
     }
 
 }

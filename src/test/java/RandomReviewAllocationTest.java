@@ -49,7 +49,7 @@ public class RandomReviewAllocationTest {
     }
 
     @Test
-    public void shouldAllocatedReviewerWithHighestReviewCountWhenRandomGivesZero() throws UnauthorizedActionException {
+    public void shouldAllocateReviewerWithHighestReviewCountWhenRandomGivesZero() throws UnauthorizedActionException {
         Reviewer highestCount = new Reviewer(UUID.randomUUID(), 30);
 
         List<Reviewer> reviewers = new ArrayList<>();
@@ -67,5 +67,39 @@ public class RandomReviewAllocationTest {
         Mockito.verify(db, Mockito.times(1)).addReviewer(review, highestCount);
         assertTrue(review.getReviewers().contains(highestCount));
         assertEquals(allocated, highestCount);
+    }
+
+    @Test
+    public void shouldAllocateReviewerWithMiddleReviewCountWhenRandomGivesAMiddleRange() throws UnauthorizedActionException {
+        Reviewer middleCount = new Reviewer(UUID.randomUUID(), 10);
+
+        List<Reviewer> reviewers = new ArrayList<>();
+        reviewers.add(middleCount);
+        reviewers.add(new Reviewer(UUID.randomUUID(), 15));
+        reviewers.add(new Reviewer(UUID.randomUUID(), 2));
+        reviewers.add(new Reviewer(UUID.randomUUID(), 2));
+
+        // weights will be [1, 2, 3, 3]
+        // so range for 15 should be 1/9 to 3/9
+        Mockito.doReturn(reviewers).when(db).getReviewers();
+        Mockito.doReturn(1.0 / 9.0).when(random).nextDouble();
+
+        Reviewer allocated = rh.allocateRandomReviewer(random);
+
+        Mockito.verify(db, Mockito.atLeastOnce()).getReviewers();
+        Mockito.verify(db, Mockito.times(1)).addReviewer(review, middleCount);
+        assertTrue(review.getReviewers().contains(middleCount));
+        assertEquals(allocated, middleCount);
+
+
+        // try the other end of the range
+        Mockito.doReturn(2.99 / 9.0).when(random).nextDouble();
+        allocated = rh.allocateRandomReviewer(random);
+        assertEquals(allocated, middleCount);
+
+        // and a middle value
+        Mockito.doReturn(1.98 / 9.0).when(random).nextDouble();
+        allocated = rh.allocateRandomReviewer(random);
+        assertEquals(allocated, middleCount);
     }
 }

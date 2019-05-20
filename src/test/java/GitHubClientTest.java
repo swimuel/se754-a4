@@ -9,20 +9,23 @@ public class GitHubClientTest {
 
     @Test
     public void shouldStoreUsernamePasswordAfterSignIn() throws BadLoginException {
-        GitHubClient user = new GitHubClient();
-        user.signIn("username", "password");
+        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
+        mockedUser.signIn("username", "password");
+
+        Mockito.when(mockedUser.getUsername()).thenReturn("username");
+
         // check username has been stored
-        assertEquals("username", user.getUsername());
+        assertEquals("username", mockedUser.getUsername());
     } 
     
     @Test
     public void shouldRemoveUsernamePasswordAfterSignOut() throws BadLoginException {
-        GitHubClient user = new GitHubClient();
+        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
         // need to be signed in to sign out 
-        user.signIn("username", "password");
+        mockedUser.signIn("username", "password");
         // sign out 
-        user.signOut();
-        String username = user.getUsername();
+        mockedUser.signOut();
+        String username = mockedUser.getUsername();
         // Check username is no longer stored
         assertEquals(null, username);
     }

@@ -10,15 +10,11 @@ public class Linter {
         this.formatter = new Formatter();
     }
 
-    public SourceCode lint(SourceCode sourceCode){
+    public SourceCode lint(SourceCode sourceCode) throws FormatterException {
         // takes a source code object, formats it using google java formatter
         // returns a source code object of the linted source code
         String linted = null;
-        try {
-            linted = formatter.formatSource(sourceCode.getValue());
-        } catch (FormatterException e) {
-            e.printStackTrace();
-        }
+        linted = formatter.formatSource(sourceCode.getValue());
         return new SourceCode(linted);
     }
 }

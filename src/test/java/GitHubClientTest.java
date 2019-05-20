@@ -9,47 +9,48 @@ public class GitHubClientTest {
 
     @Test
     public void shouldStoreUsernamePasswordAfterSignIn() throws BadLoginException {
-        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
-        mockedUser.signIn("username", "password");
-
-        Mockito.when(mockedUser.getUsername()).thenReturn("username");
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
 
         // check username has been stored
-        assertEquals("username", mockedUser.getUsername());
+        assertEquals("username", user.getUsername());
     } 
     
     @Test
     public void shouldRemoveUsernamePasswordAfterSignOut() throws BadLoginException {
-        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
         // need to be signed in to sign out 
-        mockedUser.signIn("username", "password");
+        user.signIn("username", "password");
         // sign out 
-        mockedUser.signOut();
-        String username = mockedUser.getUsername();
+        user.signOut();
+        String username = user.getUsername();
         // Check username is no longer stored
         assertEquals(null, username);
     }
 
     @Test(expected = BadLoginException.class)
     public void shouldThrowExceptionWhenUsernameAndPasswordAreIncorrect() throws BadLoginException {
-        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        Mockito.doThrow(new BadLoginException()).when(mockedConnection).authenticateUser("username", "badPassword");
 
-        Mockito.doThrow(new BadLoginException()).when(mockedUser).signIn("username", "badPassword");
+        GitHubClient user = new GitHubClient(mockedConnection);
 
-        mockedUser.signIn("username", "badPassword");
+        user.signIn("username", "badPassword");
     }
 
     @Test
     public void shouldNotStoreUsernameIfThereIsABadLoginException() {
-        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
         try {
-            Mockito.doThrow(new BadLoginException()).when(mockedUser).signIn("username", "badPassword");
-
-            mockedUser.signIn("username", "badPassword");
+            Mockito.doThrow(new BadLoginException()).when(mockedConnection).authenticateUser("username", "badPassword");        
+            user.signIn("username", "badPassword");
         }
         catch(BadLoginException e) { 
             // check that the username was not stored after the login attempt
-            String username = mockedUser.getUsername();
+            String username = user.getUsername();
             assertEquals(null, username);
         }
     }

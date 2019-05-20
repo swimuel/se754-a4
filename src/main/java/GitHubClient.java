@@ -9,7 +9,6 @@ import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
-import org.eclipse.egit.github.core.service.RepositoryService;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHPullRequestReview;
 import org.kohsuke.github.GHPullRequestReviewBuilder;
@@ -20,15 +19,17 @@ import org.kohsuke.github.GitHubBuilder;
 
 public class GitHubClient {
 
-    private String _username;
-    private String _password;
-    private int _mostRecentPullRequestNo;
-    private HashMap<String, String> _sourceFiles;
+    private String username;
+    private String password;
+    private int mostRecentPullRequestNo;
+    private HashMap<String, String> sourceFiles;
+    private GitHubConnection gitHubConnection;
 
-    public GitHubClient() {
-        _username = null;
-        _password = null;
-        _mostRecentPullRequestNo = 0;
+    public GitHubClient(GitHubConnection gitHubConnection) {
+        this.username = null;
+        this.password = null;
+        this.mostRecentPullRequestNo = 0;
+        this.gitHubConnection = gitHubConnection;
     }
 
     /**
@@ -38,32 +39,27 @@ public class GitHubClient {
      * @param password user password
      */
     public void signIn(String username, String password) throws BadLoginException {
-        _username = username;
-        _password = password;
 
-        RepositoryService repoService = new RepositoryService();
-        repoService.getClient().setCredentials(_username, _password);
-
-        // try to get a repository, if it fails then the username/password are incorrect
-        try{
-            RepositoryId repoId = new RepositoryId("eclipse", "egit-github");
-            repoService.getRepository(repoId);
+        try {   
+            this.gitHubConnection.authenticateUser(username, password);
         }
-        catch(IOException e) {
-            // set username/password back to null and throw a new exception
-            _username = null;
-            _password = null;
+        catch(BadLoginException e) {
+            this.username = null;
+            this.password = null;
             throw new BadLoginException();
         }
+
         // if no exception then the user is logged in
+        this.username = username;
+        this.password = password;
     }
 
     /**
      * Removes the username and password so that any further user actions will fail
      */
     public void signOut() {
-        _username = null;
-        _password = null;
+        this.username = null;
+        this.password = null;
     }
 
     /**
@@ -81,13 +77,13 @@ public class GitHubClient {
      *         contents or null if error
      */
     public HashMap<String, String> fetchSource(String owner, String repo, String path, String branch) {
-        if (_username == null) {
+        if (this.username == null) {
             return null; // if user is not logged in can not get contents
         }
         ContentsService contentsService = new ContentsService();
         RepositoryId repoId = new RepositoryId(owner, repo);
 
-        contentsService.getClient().setCredentials(_username, _password);
+        contentsService.getClient().setCredentials(this.username, this.password);
         HashMap<String, String> source = new HashMap<String, String>();
         try {
             // get contents from path
@@ -108,7 +104,7 @@ public class GitHubClient {
                 // if content is non null then it is a file so add its content to the output
                 else if (repoContents.get(i).getContent() != null) {
                     source.put(repoContents.get(i).getPath(), repoContents.get(i).getContent());
-                    _sourceFiles.put(repoContents.get(i).getPath(), repoContents.get(i).getContent());
+                    this.sourceFiles.put(repoContents.get(i).getPath(), repoContents.get(i).getContent());
                 }
             }
 
@@ -134,16 +130,16 @@ public class GitHubClient {
      */
     public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo,
             String branch) {
-        if (_username == null) {
+        if (this.username == null) {
             return null; // if user is not logged in can not get contents
         }
         PullRequestService prService = new PullRequestService();
-        prService.getClient().setCredentials(_username, _password);
+        prService.getClient().setCredentials(this.username, this.password);
         RepositoryId repoId = new RepositoryId(owner, repo);
         HashMap<String, String> source = new HashMap<String, String>();
 
         ContentsService contentsService = new ContentsService();
-        contentsService.getClient().setCredentials(_username, _password);
+        contentsService.getClient().setCredentials(this.username, this.password);
 
         try {
             List<CommitFile> files = prService.getFiles(repoId, pullRequestNo);
@@ -151,7 +147,7 @@ public class GitHubClient {
                 List<RepositoryContents> fileContents = contentsService.getContents(repoId, c.getFilename(), branch);
                 for (RepositoryContents r : fileContents) {
                     source.put(c.getFilename(), r.getContent());
-                    _sourceFiles.put(c.getFilename(), r.getContent());
+                    this.sourceFiles.put(c.getFilename(), r.getContent());
                 }
             }
 
@@ -165,7 +161,7 @@ public class GitHubClient {
 
     /**
      * Creates a swing worker class that will listen for a pull request on a background thread.
-     * When there is a pull requeset it will fetch the source code and put it in the _sourceFiles 
+     * When there is a pull requeset it will fetch the source code and put it in the this.sourceFiles 
      * field of this class.
      * 
      * @param owner String owner of repo to listen on 
@@ -173,11 +169,11 @@ public class GitHubClient {
      * @return 0 on success or -1 if the user is not logged in
      */
     public int startListeningForPullRequests(String owner, String repo) {
-        if (_username == null) {
+        if (this.username == null) {
             return -1;
         }
-        PullRequestListener pullRequestListener = new PullRequestListener(this, _username, _password, owner, repo,
-                _mostRecentPullRequestNo);
+        PullRequestListener pullRequestListener = new PullRequestListener(this, this.username, this.password, owner, repo,
+                this.mostRecentPullRequestNo);
         pullRequestListener.execute();
         return 0;
     }
@@ -194,13 +190,13 @@ public class GitHubClient {
      *                      if the request is not automatically mergeable.
      */
     public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) {
-        if (_username == null) {
+        if (this.username == null) {
             // user is not signed in
             return -1;
         }
         PullRequestService service = new PullRequestService();
 
-        service.getClient().setCredentials(_username, _password);
+        service.getClient().setCredentials(this.username, this.password);
         RepositoryId repo = new RepositoryId(owner, repoName);
         try {
             if (service.getPullRequest(repo, pullRequestNo).isMergeable())
@@ -224,12 +220,12 @@ public class GitHubClient {
      *                      is an exception 
      */
     public int createPullRequestComment(String comment, String owner, String repo, int pullRequestNo){
-        if(_username == null){
+        if(this.username == null){
             return -1;
         }
         try {
             IssueService iService = new IssueService();
-            iService.getClient().setCredentials(_username, _password);
+            iService.getClient().setCredentials(this.username, this.password);
             RepositoryId repoId = new RepositoryId(owner, repo);
             iService.createComment(repoId, pullRequestNo, comment);
         } catch (IOException e) {
@@ -249,14 +245,14 @@ public class GitHubClient {
      * @return              returns 0 on success, -1 if user is not logged in, and -2 for an exception
      */
     public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment){
-        if(_username ==  null){
+        if(this.username ==  null){
             return -1;
         }
         try {
             // set up the user login properites
             Properties props = new Properties();
-            props.setProperty("login", _username);
-            props.setProperty("password", _password);
+            props.setProperty("login", this.username);
+            props.setProperty("password", this.password);
 
             // get the repository
             GitHub gitHub = GitHubBuilder.fromProperties(props).build();
@@ -284,7 +280,7 @@ public class GitHubClient {
      * @return String username
      */
     public String getUsername() {
-        return _username;
+        return this.username;
     }
 
     /**
@@ -292,7 +288,7 @@ public class GitHubClient {
      * @param pullNo the most recent pull request number
      */
     public void setMostRecentPullRequestNo(int pullNo){
-        _mostRecentPullRequestNo = pullNo;
+        this.mostRecentPullRequestNo = pullNo;
     }
 
     /**
@@ -301,7 +297,7 @@ public class GitHubClient {
      * @return HashMap<String, String> of all stored source files
      */
     public HashMap<String, String> getSourceFiles() {
-        return _sourceFiles;
+        return this.sourceFiles;
     }
 
     /**
@@ -309,6 +305,6 @@ public class GitHubClient {
      * from the hashmap
      */
     public void clearSourceFiles() {
-        _sourceFiles.clear();
+        this.sourceFiles.clear();
     }
 }

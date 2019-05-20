@@ -28,4 +28,8 @@ public class DeveloperReviewHandler {
         }
         return success;
     }
+
+    public void allocateRandomReviewer() {
+
+    }
 }

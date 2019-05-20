@@ -1,14 +1,11 @@
-public class User {
-    private boolean isDeveloper;
+package user;
+
+public class Reviewer extends User {
     private int reviewCount;
 
-    public User(boolean isDeveloper) {
-        this.isDeveloper = isDeveloper;
+    public Reviewer() {
+        super(false);
         this.reviewCount = 0;
-    }
-
-    public boolean isDeveloper() {
-        return this.isDeveloper;
     }
 
     public int getReviewCount() {

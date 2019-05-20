@@ -1,6 +1,8 @@
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import user.Developer;
+import user.Reviewer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,16 +16,16 @@ public class ReviewAllocationCountTest {
 
     @Test
     public void reviewCountShouldBeInitialisedToZero() {
-        User user = new User(false);
-        assertEquals(0, user.getReviewCount());
+        Reviewer reviewer = new Reviewer();
+        assertEquals(0, reviewer.getReviewCount());
     }
 
     @Test
     public void reviewCountShouldIncrementAndDBShouldUpdateWhenReviewCompleted() {
-        User reviewer = new User(false);
+        Reviewer reviewer = new Reviewer();
         int reviewCount = reviewer.getReviewCount();
 
-        Review review = new Review(Mockito.mock(Results.class), reviewer, db);
+        Review review = new Review(Mockito.mock(Results.class), new Developer(), db);
         review.submitReview(reviewer);
 
         assertEquals(reviewCount + 1, reviewer.getReviewCount());

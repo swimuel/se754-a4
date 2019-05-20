@@ -1,5 +1,8 @@
+import user.Reviewer;
+import user.User;
+
 public interface Database {
-    void saveReviewer(Review review, User reviewer);
-    void removeReviewer(Review review, User reviewer);
-    void persistReviewer(User reviewer);
+    void saveReviewer(Review review, Reviewer reviewer);
+    void removeReviewer(Review review, Reviewer reviewer);
+    void persistReviewer(Reviewer reviewer);
 }

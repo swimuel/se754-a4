@@ -14,8 +14,10 @@ public class DeveloperReviewHandler {
         review.setDevEnvironment(true);
     }
 
-    public void addReviewer(Reviewer reviewer) {
-
+    public void addReviewer(Reviewer reviewer) throws UnauthorizedActionException {
+        this.review.addReviewer(reviewer);
+        reviewer.incrementReviewCount();
+        this.db.persistReviewer(reviewer);
     }
 
     public boolean removeReviewer(Reviewer reviewer) {

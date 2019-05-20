@@ -26,9 +26,10 @@ public class ReviewAllocationPersistenceTest {
         Reviewer reviewer = new Reviewer();
         assertEquals(0, reviewer.getReviewCount());
     }
+    
 
-    @Test(expected = InvalidReviewerException.class)
-    public void reviewCountShouldBeUpdatedAndStoredInDatabaseWhenReviewerAllocated() {
+    @Test
+    public void reviewCountShouldBeUpdatedAndStoredInDatabaseWhenReviewerAllocated() throws UnauthorizedActionException {
         Reviewer reviewer = new Reviewer();
         int reviewCount = reviewer.getReviewCount();
 

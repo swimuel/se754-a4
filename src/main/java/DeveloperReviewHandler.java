@@ -18,9 +18,14 @@ public class DeveloperReviewHandler {
         this.review.addReviewer(reviewer);
         reviewer.incrementReviewCount();
         this.db.persistReviewer(reviewer);
+        this.db.addReviewer(this.review, reviewer);
     }
 
-    public boolean removeReviewer(Reviewer reviewer) {
-        return true;
+    public boolean removeReviewer(Reviewer reviewer) throws UnauthorizedActionException {
+        boolean success = this.review.removeReviewer(reviewer);
+        if (success) {
+            this.db.removeReviewer(this.review, reviewer);
+        }
+        return success;
     }
 }

@@ -1,5 +1,4 @@
 import user.Reviewer;
-import user.User;
 import user.Developer;
 
 import java.util.ArrayList;
@@ -12,15 +11,12 @@ public class Review {
     private Developer author;
     private boolean isDevEnvironment;
     private List<Reviewer> reviewers;
-    private Database db;
 
-
-    public Review(Results results, Developer author, Database db) {
+    public Review(Results results, Developer author) {
         this.reviewers = new ArrayList<>();
         this.results = results;
         this.author = author;
         this.isDevEnvironment = true;
-        this.db = db;
     }
 
 	public void sendAutomatedResults(Results autoResults) {
@@ -40,7 +36,6 @@ public class Review {
         }
 
         this.reviewers.add(reviewer);
-        this.db.saveReviewer(this, reviewer);
     }
 
     public boolean removeReviewer(Reviewer reviewer) throws UnauthorizedActionException {
@@ -49,16 +44,12 @@ public class Review {
         }
 
         boolean success = this.reviewers.remove(reviewer);
-        if (success) {
-            this.db.removeReviewer(this, reviewer);
-        }
 
         return success;
     }
 
     public void submitReview(Reviewer reviewer) {
         reviewer.incrementReviewCount();
-        this.db.persistReviewer(reviewer);
     }
 
     public List<Reviewer> getReviewers() {

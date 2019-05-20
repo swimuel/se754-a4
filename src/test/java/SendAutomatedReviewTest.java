@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import user.Developer;
-import user.User;
 
 public class SendAutomatedReviewTest {
 
@@ -21,7 +20,7 @@ public class SendAutomatedReviewTest {
         developer = Mockito.mock(DeveloperSide.class);
         results = Mockito.mock(Results.class);
         reviewAuthor = new Developer();
-        review = new Review(results, reviewAuthor, Mockito.mock(Database.class));
+        review = new Review(results, reviewAuthor);
         review.setReviewers(developer, nonDeveloper);
     }
 

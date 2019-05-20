@@ -12,22 +12,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class TestCodeReviewAllocation {
+/**
+ * Specifies the expected behaviour of adding and removing reviewers to a review under
+ * certain conditions.
+ */
+public class AssignAndRemoveReviewersTest {
 
     Review review;
     Developer reviewAuthor;
-    Database db;
 
     @Before
     public void setup() {
         reviewAuthor = new Developer();
-        db = Mockito.mock(Database.class); // interface then mock it to control what is returned
-        review = new Review(Mockito.mock(Results.class), reviewAuthor, db);
+        review = new Review(Mockito.mock(Results.class), reviewAuthor);
     }
 
     @Test
-    public void shouldSuccessfullyAddSingleReviewer()
-            throws UnauthorizedActionException {
+    public void shouldSuccessfullyAddSingleReviewer() throws UnauthorizedActionException {
         Reviewer nonDevReviewer = new Reviewer();
         review.addReviewer(nonDevReviewer);
 
@@ -35,12 +36,10 @@ public class TestCodeReviewAllocation {
         expectedReviewers.add(nonDevReviewer);
 
         assertEquals(expectedReviewers, review.getReviewers());
-        Mockito.verify(db, Mockito.times(1)).saveReviewer(Mockito.eq(review), Mockito.any(Reviewer.class));
     }
 
     @Test
-    public void shouldSuccessfullyAddMultipleReviewers()
-            throws UnauthorizedActionException {
+    public void shouldSuccessfullyAddMultipleReviewers() throws UnauthorizedActionException {
         Reviewer reviewer1 = new Reviewer();
         Reviewer reviewer2 = new Reviewer();
         review.addReviewer(reviewer1);
@@ -51,20 +50,13 @@ public class TestCodeReviewAllocation {
         reviewers.add(reviewer2);
 
         assertEquals(reviewers, review.getReviewers());
-        Mockito.verify(db, Mockito.times(1)).saveReviewer(review, reviewer1);
-        Mockito.verify(db, Mockito.times(1)).saveReviewer(review, reviewer2);
     }
 
     @Test(expected = UnauthorizedActionException.class)
     public void shouldNotAllowNonDeveloperToAddReviewer() throws UnauthorizedActionException {
         review.setDevEnvironment(false);
         Reviewer reviewer = new Reviewer();
-        try {
-            review.addReviewer(reviewer);
-        } catch (UnauthorizedActionException e) {
-            Mockito.verify(db, Mockito.never()).saveReviewer(Mockito.eq(review), Mockito.any(Reviewer.class));
-            throw e;
-        }
+        review.addReviewer(reviewer);
     }
 
     @Test
@@ -76,7 +68,6 @@ public class TestCodeReviewAllocation {
 
         assertTrue(success);
         assertEquals(new ArrayList<User>(), review.getReviewers());
-        Mockito.verify(db, Mockito.times(1)).removeReviewer(Mockito.eq(review), Mockito.any(Reviewer.class));
     }
 
     @Test
@@ -89,11 +80,10 @@ public class TestCodeReviewAllocation {
 
         assertFalse(success);
         assertEquals(1, review.getReviewers().size());
-        Mockito.verify(db, Mockito.never()).removeReviewer(Mockito.eq(review), Mockito.any(Reviewer.class));
     }
 
     @Test(expected = UnauthorizedActionException.class)
-    public void shouldNotAllowNonDeveloperToRemoveReviewer() throws UnauthorizedActionException, InvalidReviewerException {
+    public void shouldNotAllowNonDeveloperToRemoveReviewer() throws UnauthorizedActionException {
         Reviewer reviewer = new Reviewer();
         review.addReviewer(reviewer);
         review.setDevEnvironment(false);
@@ -102,7 +92,6 @@ public class TestCodeReviewAllocation {
             review.removeReviewer(reviewer);
         } catch (UnauthorizedActionException e) {
             assertEquals(1, review.getReviewers().size());
-            Mockito.verify(db, Mockito.never()).removeReviewer(Mockito.eq(review), Mockito.any(Reviewer.class));
             throw e;
         }
     }

@@ -50,6 +50,7 @@ public class GitHubClient {
      *               all source
      * @param branch the name of the branch to get the source from, if it is null it
      *               will get source from the master branch
+     * 
      * @return hashmap with keys of file names and values of base64 encoded file
      *         contents or null if error
      */
@@ -78,6 +79,7 @@ public class GitHubClient {
      * @param repo          String name of repository
      * @param pullRequestNo int number representing the pull request
      * @param branch        String name of the branch to get the source from
+     * 
      * @return HashMap with the keys as full names of the files and values as the
      *         base64 encoded content of the file.
      */
@@ -104,6 +106,7 @@ public class GitHubClient {
      * 
      * @param owner String owner of repo to listen on 
      * @param repo  String name of the repository
+     * 
      * @return 0 on success or -1 if the user is not logged in
      */
     public int startListeningForPullRequests(String owner, String repo) {
@@ -122,8 +125,9 @@ public class GitHubClient {
      * @param repoName      name of the repo iteslf
      * @param pullRequestNo number of the pull request trying to be merged
      * @param commitMessage message to be included in the merge
-     * @return              0 on success, -1 if user is not logged in, -2 if source is not automatically 
-     *                      mergeable, -3 for a merge error
+     * 
+     * @return 0 on success, -1 if user is not logged in, -2 if source is not automatically 
+     *         mergeable, -3 for a merge error
      */
     public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) {
         if (this.username == null) {
@@ -135,12 +139,14 @@ public class GitHubClient {
 
     /**
      * Puts a comment on the pull request with id of pullRequestNumber
+     * 
      * @param comment       the string comment to add to the pull request
      * @param owner         string owner of the repo
      * @param repo          string repo name 
      * @param pullRequestNo int id of the pull request
-     * @return              returns 0 on success, -1 if the user is not logged in, and -2 if there
-     *                      is an exception 
+     * 
+     * @return returns 0 on success, -1 if the user is not logged in, and -2 if there
+     *         is an exception 
      */
     public int createPullRequestComment(String comment, String owner, String repo, int pullRequestNo){
         if(this.username == null){
@@ -152,11 +158,13 @@ public class GitHubClient {
   
     /**
      * Used to create a comment with a code request change to a pull reqest with number pullRequestNo
+     * 
      * @param owner         String owner of the repository 
      * @param repo          String name of the repository 
      * @param pullRequestNo int number of the pull request
      * @param comment       String comment to add along with the change request.
-     * @return              returns 0 on success, -1 if user is not logged in, and -2 for an exception
+     * 
+     * @return returns 0 on success, -1 if user is not logged in, and -2 for an exception
      */
     public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment){
         if(this.username ==  null){
@@ -168,6 +176,7 @@ public class GitHubClient {
 
     /**
      * Gets the username 
+     * 
      * @return String username
      */
     public String getUsername() {
@@ -185,6 +194,7 @@ public class GitHubClient {
     /**
      * Get all of the currently stored source files as a 
      * HashMap
+     * 
      * @return HashMap<String, String> of all stored source files
      */
     public HashMap<String, String> getSourceFiles() {

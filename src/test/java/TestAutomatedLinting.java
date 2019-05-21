@@ -5,7 +5,7 @@ import org.junit.Test;
 
 
 public class TestAutomatedLinting {
-    Linter linter;
+    private Linter linter;
 
     @Before
     public void setup(){

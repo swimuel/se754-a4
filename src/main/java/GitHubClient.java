@@ -134,10 +134,8 @@ public class GitHubClient {
         if (this.username == null) {
             return -1;
         }
-        PullRequestListener pullRequestListener = new PullRequestListener(this, this.username, this.password, owner, repo,
-                this.mostRecentPullRequestNo);
-        pullRequestListener.execute();
-        return 0;
+
+        return this.gitHubConnection.startListeningForPullRequests(this, this.username, this.password, owner, repo, this.mostRecentPullRequestNo);
     }
 
     /**
@@ -148,28 +146,15 @@ public class GitHubClient {
      * @param repoName      name of the repo iteslf
      * @param pullRequestNo number of the pull request trying to be merged
      * @param commitMessage message to be included in the merge
-     * @return              0 on success, -1 if user is not logged in, -2 for merge error, and -3
-     *                      if the request is not automatically mergeable.
+     * @return              0 on success, -1 if user is not logged in, -2 if source is not automatically 
+     *                      mergeable, -3 for a merge error
      */
     public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) {
         if (this.username == null) {
             // user is not signed in
             return -1;
         }
-        PullRequestService service = new PullRequestService();
-
-        service.getClient().setCredentials(this.username, this.password);
-        RepositoryId repo = new RepositoryId(owner, repoName);
-        try {
-            if (service.getPullRequest(repo, pullRequestNo).isMergeable())
-                service.merge(repo, pullRequestNo, commitMessage);
-            else
-                return -2; // repo is not automatically mergeable
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -3;
-        }
-        return 0;
+        return this.gitHubConnection.mergeChanges(owner, repoName, pullRequestNo, commitMessage, this.username, this.password);
     }
 
     /**

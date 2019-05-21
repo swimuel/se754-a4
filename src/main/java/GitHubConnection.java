@@ -118,4 +118,49 @@ public class GitHubConnection {
         return source;
     }
 
+    /**
+     * 
+     * @param user
+     * @param username
+     * @param password
+     * @param owner
+     * @param repo
+     * @param mostRecentPullRequestNo
+     * @return
+     */
+    public int startListeningForPullRequests(GitHubClient user, String username, String password, String owner, String repo, int mostRecentPullRequestNo) {
+
+        PullRequestListener pullRequestListener = new PullRequestListener(user, username, password, owner, repo,
+                mostRecentPullRequestNo);
+        pullRequestListener.execute();
+        return 0;
+    }
+
+    /**
+     * 
+     * @param owner
+     * @param repoName
+     * @param pullRequestNo
+     * @param commitMessage
+     * @return
+     */
+    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage, String username, String password) {
+
+        PullRequestService service = new PullRequestService();
+
+        service.getClient().setCredentials(username, password);
+        RepositoryId repo = new RepositoryId(owner, repoName);
+        try {
+            if (service.getPullRequest(repo, pullRequestNo).isMergeable())
+                service.merge(repo, pullRequestNo, commitMessage);
+            else
+                return -2; // repo is not automatically mergeable
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -3;
+        }
+        return 0;
+    }
+
+
 }

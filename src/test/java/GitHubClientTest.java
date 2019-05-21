@@ -113,14 +113,16 @@ public class GitHubClientTest {
 
     @Test(timeout = 10000)
     public void shouldReturnImmediatelyWhenStartingListeningForPullRequests() throws BadLoginException {
-        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
-        mockedUser.signIn("username", "password");
-        mockedUser.startListeningForPullRequests("owner", "repo");
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        user.startListeningForPullRequests("owner", "repo");
     }
 
     @Test
     public void shouldReturnNegativeOneIfUserIsNotLoggedInAndTriesToListenForPullRequests() {
-        GitHubClient user = new GitHubClient();
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
         int ret = user.startListeningForPullRequests("owner", "repo");
         assertEquals(-1, ret);
     }
@@ -132,12 +134,13 @@ public class GitHubClientTest {
         String repoName = "repo";
         int pullRequestNo = 1;
         String commitMessage = "merging";
-        GitHubClient mockedGitHubUser = Mockito.mock(GitHubClient.class);
-        mockedGitHubUser.signIn("username", "password");
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
 
-        Mockito.when(mockedGitHubUser.mergeChanges(owner, repoName, pullRequestNo, commitMessage)).thenReturn(0);
+        Mockito.when(mockedConnection.mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password")).thenReturn(0);
         // try the merge
-        int ret = mockedGitHubUser.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
+        int ret = user.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
         // if return value is not zero then it failed in some way
         assertEquals(ret, 0);
     }
@@ -149,11 +152,12 @@ public class GitHubClientTest {
         String repoName = "repo";
         int pullRequestNo = 1;
         String commitMessage = "merging";
-        GitHubClient mockedGitHubUser = Mockito.mock(GitHubClient.class);
+
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
         
-        Mockito.when(mockedGitHubUser.mergeChanges(owner, repoName, pullRequestNo, commitMessage)).thenReturn(-1);
         // try the merge
-        int ret = mockedGitHubUser.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
+        int ret = user.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
         // if user is not logged in should return -1
         assertEquals(-1, ret);
     }

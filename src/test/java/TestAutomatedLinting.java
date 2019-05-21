@@ -1,5 +1,3 @@
-package CodeInspection;
-
 import com.google.googlejavaformat.java.FormatterException;
 import org.junit.Assert;
 import org.junit.Before;

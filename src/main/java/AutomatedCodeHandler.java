@@ -1,29 +1,40 @@
+import com.google.googlejavaformat.java.FormatterException;
+
 import java.util.List;
 
 public class AutomatedCodeHandler {
     private Abstracter abstracter;
     private Linter linter;
+    private Inspector inspector;
 
-    public AutomatedCodeHandler(){
+
+    public AutomatedCodeHandler(Abstracter abstracter, Linter linter, Inspector inspector){
+        this.linter = linter;
+        this.inspector = inspector;
+        this.abstracter = abstracter;
+    }
+
+    public SourceCode performLinting(SourceCode code) throws FormatterException {
+        return linter.lint(code);
     }
 
     public List<Abstraction> performAbstraction(SourceCode code){
         return abstracter.performAbstraction(code);
     }
 
-    public Abstracter getAbstracter() {
-        return abstracter;
+    public InspectionResults performInspection(SourceCode code){
+        return inspector.inspectCode(code);
     }
 
-    public void setAbstracter(Abstracter abstracter) {
-        this.abstracter = abstracter;
-    }
+    public InitialReviewResults performAutomatedReview(SourceCode code){
+        try {
+            code = performLinting(code);
+        } catch (FormatterException e) {
+            e.printStackTrace();
+        }
+        List<Abstraction> abstractions = performAbstraction(code);
+        InspectionResults inspectionResults = performInspection(code);
 
-    public Linter getLinter() {
-        return linter;
-    }
-
-    public void setLinter(Linter linter) {
-        this.linter = linter;
+        return new InitialReviewResults(code, abstractions, inspectionResults);
     }
 }

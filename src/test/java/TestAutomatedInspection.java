@@ -23,7 +23,12 @@ public class TestAutomatedInspection {
     public void fullReview(){
         SourceCode lintedCode = new SourceCode("class test {}\n");
         SourceCode code = new SourceCode("class test  { }");
-        InitialReviewResults results = ah.performAutomatedReview(code);
+        InitialReviewResults results = null;
+        try {
+            results = ah.performAutomatedReview(code);
+        } catch (FormatterException e) {
+            e.printStackTrace();
+        }
         Assert.assertEquals(lintedCode.getValue(), results.getSourceCode().getValue());
         Mockito.verify(inspector, Mockito.times(1)).inspectCode(results.getSourceCode());
         Mockito.verify(abstracter, Mockito.times(1)).performAbstraction(results.getSourceCode());

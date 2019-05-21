@@ -26,12 +26,8 @@ public class AutomatedCodeHandler {
         return inspector.inspectCode(code);
     }
 
-    public InitialReviewResults performAutomatedReview(SourceCode code){
-        try {
-            code = performLinting(code);
-        } catch (FormatterException e) {
-            e.printStackTrace();
-        }
+    public InitialReviewResults performAutomatedReview(SourceCode code) throws FormatterException {
+        code = performLinting(code);
         List<Abstraction> abstractions = performAbstraction(code);
         InspectionResults inspectionResults = performInspection(code);
 

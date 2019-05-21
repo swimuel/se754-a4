@@ -1,5 +1,3 @@
-package CodeInspection;
-
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
 

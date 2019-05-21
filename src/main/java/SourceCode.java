@@ -1,5 +1,3 @@
-package CodeInspection;
-
 public class SourceCode {
     private String value;
     public SourceCode(String value){

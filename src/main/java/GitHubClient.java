@@ -1,21 +1,4 @@
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
-
-import org.eclipse.egit.github.core.CommitFile;
-import org.eclipse.egit.github.core.RepositoryContents;
-import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.service.ContentsService;
-import org.eclipse.egit.github.core.service.IssueService;
-import org.eclipse.egit.github.core.service.PullRequestService;
-import org.kohsuke.github.GHPullRequest;
-import org.kohsuke.github.GHPullRequestReview;
-import org.kohsuke.github.GHPullRequestReviewBuilder;
-import org.kohsuke.github.GHPullRequestReviewEvent;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
-import org.kohsuke.github.GitHubBuilder;
 
 public class GitHubClient {
 
@@ -41,14 +24,7 @@ public class GitHubClient {
      */
     public void signIn(String username, String password) throws BadLoginException {
 
-        try {   
-            this.gitHubConnection.authenticateUser(username, password);
-        }
-        catch(BadLoginException e) {
-            this.username = null;
-            this.password = null;
-            throw new BadLoginException();
-        }
+        this.gitHubConnection.authenticateUser(username, password);
 
         // if no exception then the user is logged in
         this.username = username;
@@ -170,17 +146,8 @@ public class GitHubClient {
         if(this.username == null){
             return -1;
         }
-        try {
-            IssueService iService = new IssueService();
-            iService.getClient().setCredentials(this.username, this.password);
-            RepositoryId repoId = new RepositoryId(owner, repo);
-            iService.createComment(repoId, pullRequestNo, comment);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -2;
-        }
 
-        return 0;
+        return this.gitHubConnection.createPullRequestComment(comment, owner, repo, pullRequestNo, this.username, this.password);
     }
   
     /**
@@ -195,31 +162,8 @@ public class GitHubClient {
         if(this.username ==  null){
             return -1;
         }
-        try {
-            // set up the user login properites
-            Properties props = new Properties();
-            props.setProperty("login", this.username);
-            props.setProperty("password", this.password);
 
-            // get the repository
-            GitHub gitHub = GitHubBuilder.fromProperties(props).build();
-            GHRepository repository = gitHub.getRepository(owner + "/" + repo);
-
-            // get the pull request 
-            GHPullRequest pullRequest = repository.getPullRequest(pullRequestNo);
-
-            // build a review object
-            GHPullRequestReviewBuilder reviewBuilder = pullRequest.createReview();
-            reviewBuilder.body(comment).event(GHPullRequestReviewEvent.REQUEST_CHANGES);
-
-            // send the review
-            GHPullRequestReview review = reviewBuilder.create();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -2;
-        }
-
-        return 0;
+        return this.gitHubConnection.createCodeChangeRequest(owner, repo, pullRequestNo, comment, this.username, this.password);
     }
 
     /**

@@ -165,23 +165,23 @@ public class GitHubClientTest {
     @Test
     public void shouldPostCommentsToGitHubPullRequestDiscussionPageWhenReviewersMakeComments()
             throws BadLoginException {
-        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
-        mockedUser.signIn("username", "password");
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
         // make mock object imitate a successful return from the createPullRequestComment method
-        Mockito.when(mockedUser.createPullRequestComment("test comment", "owner", "repo", 1)).thenReturn(0);
+        Mockito.when(mockedConnection.createPullRequestComment("test comment", "owner", "repo", 1, "username", "password")).thenReturn(0);
 
-        int ret = mockedUser.createPullRequestComment("test comment", "owner", "repo", 1);
+        int ret = user.createPullRequestComment("test comment", "owner", "repo", 1);
 
         assertEquals(0, ret);
     }
 
     @Test
     public void shouldNotPostCommentIfUserIsNotSignedIn() {
-        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
-        // make mock object imitate an unsuccessful return from the createPullRequestComment method
-        Mockito.when(mockedUser.createPullRequestComment("test comment", "owner", "repo", 1)).thenReturn(-1);
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
 
-        int ret = mockedUser.createPullRequestComment("test comment", "owner", "repo", 1);
+        int ret = user.createPullRequestComment("test comment", "owner", "repo", 1);
         // should return -1 if the user is not signed in
         assertEquals(-1, ret);
     }
@@ -189,18 +189,20 @@ public class GitHubClientTest {
 
     @Test
     public void shouldPostCodeChangeRequestWhenReviewersSubmitReviewContainingTheRequest() throws BadLoginException {
-        GitHubClient mockedUser = Mockito.mock(GitHubClient.class);
-        mockedUser.signIn("username", "password");
-        Mockito.when(mockedUser.createCodeChangeRequest("owner", "repo", 1, "Please change this")).thenReturn(0);
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        Mockito.when(mockedConnection.createCodeChangeRequest("owner", "repo", 1, "Please change this", "username", "password")).thenReturn(0);
 
-        int ret = mockedUser.createCodeChangeRequest("owner", "repo", 1, "Please change this");
+        int ret = user.createCodeChangeRequest("owner", "repo", 1, "Please change this");
 
         assertEquals(0, ret);
     }
 
     @Test
     public void shouldNotPostCodeChangeRequestWhenUserNotSignedIn() {
-        GitHubClient user = new GitHubClient();
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
 
         int ret = user.createCodeChangeRequest("owner", "repo", 1, "Please change this");
 

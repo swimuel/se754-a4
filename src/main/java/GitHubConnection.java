@@ -1,13 +1,22 @@
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import org.eclipse.egit.github.core.CommitFile;
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.ContentsService;
+import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
+import org.kohsuke.github.GHPullRequest;
+import org.kohsuke.github.GHPullRequestReview;
+import org.kohsuke.github.GHPullRequestReviewBuilder;
+import org.kohsuke.github.GHPullRequestReviewEvent;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
 
 public class GitHubConnection {
 
@@ -162,5 +171,62 @@ public class GitHubConnection {
         return 0;
     }
 
+    /**
+     * 
+     * @param comment
+     * @param owner
+     * @param repo
+     * @param pullRequestNo
+     * @return
+     */
+    public int createPullRequestComment(String comment, String owner, String repo, int pullRequestNo, String username, String password){
 
+        try {
+            IssueService iService = new IssueService();
+            iService.getClient().setCredentials(username, password);
+            RepositoryId repoId = new RepositoryId(owner, repo);
+            iService.createComment(repoId, pullRequestNo, comment);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -2;
+        }
+
+        return 0;
+    }
+
+    /**
+     * 
+     * @param owner
+     * @param repo
+     * @param pullRequestNo
+     * @param comment
+     * @return
+     */
+    public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment, String username, String password){
+        try {
+            // set up the user login properites
+            Properties props = new Properties();
+            props.setProperty("login", username);
+            props.setProperty("password", password);
+
+            // get the repository
+            GitHub gitHub = GitHubBuilder.fromProperties(props).build();
+            GHRepository repository = gitHub.getRepository(owner + "/" + repo);
+
+            // get the pull request 
+            GHPullRequest pullRequest = repository.getPullRequest(pullRequestNo);
+
+            // build a review object
+            GHPullRequestReviewBuilder reviewBuilder = pullRequest.createReview();
+            reviewBuilder.body(comment).event(GHPullRequestReviewEvent.REQUEST_CHANGES);
+
+            // send the review
+            GHPullRequestReview review = reviewBuilder.create();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -2;
+        }
+
+        return 0;
+    }
 }

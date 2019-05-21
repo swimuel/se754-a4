@@ -29,6 +29,7 @@ public class GitHubClient {
         this.username = null;
         this.password = null;
         this.mostRecentPullRequestNo = 0;
+        this.sourceFiles = new HashMap<String, String>();
         this.gitHubConnection = gitHubConnection;
     }
 
@@ -80,38 +81,14 @@ public class GitHubClient {
         if (this.username == null) {
             return null; // if user is not logged in can not get contents
         }
-        ContentsService contentsService = new ContentsService();
-        RepositoryId repoId = new RepositoryId(owner, repo);
-
-        contentsService.getClient().setCredentials(this.username, this.password);
-        HashMap<String, String> source = new HashMap<String, String>();
-        try {
-            // get contents from path
-            List<RepositoryContents> repoContents = contentsService.getContents(repoId, path, branch);
-            int repoContentsSize = repoContents.size();
-            for (int i = 0; i < repoContentsSize; i++) {
-                // if has no content then need to go a level deeper
-                if (repoContents.get(i).getContent() == null) {
-                    List<RepositoryContents> subContents = contentsService.getContents(repoId,
-                            repoContents.get(i).getPath(), branch);
-                    // add the sub contents to the end of the repoContents list
-                    for (RepositoryContents s : subContents) {
-                        repoContents.add(s);
-                        // increase repoContentSize so that the loop will iterate through all contents
-                        repoContentsSize++;
-                    }
-                }
-                // if content is non null then it is a file so add its content to the output
-                else if (repoContents.get(i).getContent() != null) {
-                    source.put(repoContents.get(i).getPath(), repoContents.get(i).getContent());
-                    this.sourceFiles.put(repoContents.get(i).getPath(), repoContents.get(i).getContent());
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        // use githubconnection object to retrieve the source
+        HashMap<String, String> source = this.gitHubConnection.fetchSource(owner, repo, path, branch, this.username, this.password);
+        
+        // if the source is not null add it to the map of all source files
+        if(source != null) {
+            this.sourceFiles.putAll(source);
         }
+
         return source;
     }
 
@@ -133,27 +110,12 @@ public class GitHubClient {
         if (this.username == null) {
             return null; // if user is not logged in can not get contents
         }
-        PullRequestService prService = new PullRequestService();
-        prService.getClient().setCredentials(this.username, this.password);
-        RepositoryId repoId = new RepositoryId(owner, repo);
-        HashMap<String, String> source = new HashMap<String, String>();
+        // use githubconneciton object to fetch source
+        HashMap<String, String> source = gitHubConnection.fetchSourceFromPullRequest(owner, repo, pullRequestNo, branch, this.username, this.password);
 
-        ContentsService contentsService = new ContentsService();
-        contentsService.getClient().setCredentials(this.username, this.password);
-
-        try {
-            List<CommitFile> files = prService.getFiles(repoId, pullRequestNo);
-            for (CommitFile c : files) {
-                List<RepositoryContents> fileContents = contentsService.getContents(repoId, c.getFilename(), branch);
-                for (RepositoryContents r : fileContents) {
-                    source.put(c.getFilename(), r.getContent());
-                    this.sourceFiles.put(c.getFilename(), r.getContent());
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        // if some source code was fetched then add it to the map of all source files
+        if(source != null){
+            this.sourceFiles.putAll(source);
         }
 
         return source;

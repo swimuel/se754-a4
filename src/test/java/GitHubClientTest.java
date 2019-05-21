@@ -85,6 +85,24 @@ public class GitHubClientTest {
     }
 
     @Test
+    public void shouldStoreSourceFilesInGitHubClientAfterFetching() throws BadLoginException {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        // create mock that returns a non empty HashMap, thus imitating finding at least one source file
+        Mockito.when(mockedConnection.fetchSource("owner", "repoName", "src", null, "username", "password")).thenReturn(new HashMap<String, String>(){
+            private static final long serialVersionUID = 1L;
+            {
+                put("test", "passed");
+            }
+        });
+
+        HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
+        HashMap<String, String> storedFiles = user.getSourceFiles();
+        assertNotEquals(null, storedFiles);
+    }
+
+    @Test
     public void shouldFetchSourceFromPullRequest() throws BadLoginException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
@@ -109,6 +127,24 @@ public class GitHubClientTest {
         HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null);
         // fetchSourceFromPullRequest should return null if user is not signed in
         assertEquals(null, files);
+    }
+
+    @Test
+    public void shouldStoreSourceFilesInGitHubClientAfterFetchingFromPullRequest() throws BadLoginException {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        // create mock that returns a non empty HashMap, thus imitating finding at least one source file
+        Mockito.when(mockedConnection.fetchSourceFromPullRequest("owner", "repoName", 1, null, "username", "password")).thenReturn(new HashMap<String, String>(){
+            private static final long serialVersionUID = 1L;
+            {
+                put("test", "passed");
+            }
+        });
+
+        HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
+        HashMap<String, String> storedFiles = user.getSourceFiles();
+        assertNotEquals(null, storedFiles);
     }
 
     @Test(timeout = 10000)

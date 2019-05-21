@@ -245,4 +245,25 @@ public class GitHubClientTest {
         assertEquals(-1, ret);
     }
 
+    @Test
+    public void shouldClearSourceFilesFromGitHubClientWhenCalled() throws BadLoginException {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        // create mock that returns a non empty HashMap, thus imitating finding at least one source file
+        Mockito.when(mockedConnection.fetchSourceFromPullRequest("owner", "repoName", 1, null, "username", "password")).thenReturn(new HashMap<String, String>(){
+            private static final long serialVersionUID = 1L;
+            {
+                put("test", "passed");
+            }
+        });
+
+        HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
+        // clear the source files
+        user.clearSourceFiles();
+        HashMap<String, String> storedFiles = user.getSourceFiles();
+        // check the files map is empty
+        assert(storedFiles.size() == 0);
+    }
+
 }

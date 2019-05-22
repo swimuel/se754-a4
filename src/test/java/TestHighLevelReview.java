@@ -42,13 +42,7 @@ public class TestHighLevelReview {
 
     @Test
     public void shouldStoreFeedbackOnceReviewSubmitted() {
-        review.setDevEnvironment(false);
-        try {
-            review.performReview(comments, codeChanges);
-        } catch (UnauthorizedActionException e) {
-            e.printStackTrace();
-        }
-        this.feedbackForm = review.getFeedback();
+        this.feedbackForm = nonDeveloperReviewHandler.performReview(comments, codeChanges);
         assertEquals(feedbackForm.getComments(), comments);
         assertEquals(feedbackForm.getCodeChageReq(), codeChanges);
     }
@@ -61,7 +55,7 @@ public class TestHighLevelReview {
 
     @Test
     public void receiveFeedbackFromDevSide() {
-        Feedback receivedFeedback = review.getFeedback();
+        Feedback receivedFeedback = Mockito.mock(DeveloperReviewHandler.class).getFeedback(Mockito.mock(NonDeveloperConnection.class));
         assertEquals(receivedFeedback, feedbackForm);
     }
 
@@ -80,12 +74,4 @@ public class TestHighLevelReview {
         review.approveReview();
         assertTrue(review.getApprovalStatus());
     }
-
-    @Test(expected = UnauthorizedActionException.class)
-    public void performNonDevReview() throws UnauthorizedActionException {
-        review.setDevEnvironment(true);
-        review.performReview(comments, codeChanges);
-    }
-
-
 }

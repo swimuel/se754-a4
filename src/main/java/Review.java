@@ -20,18 +20,6 @@ public class Review {
         this.initialReviewResults = initialReviewResults;
     }
 
-    public Feedback performReview(String comment, String codeChange) throws UnauthorizedActionException {
-        if (this.isDevEnvironment) {
-            throw new UnauthorizedActionException();
-        }
-        feedback = new Feedback(comment, codeChange);
-        return feedback;
-    }
-
-    public Feedback getFeedback() {
-        return feedback;
-    }
-
     public void addReviewer(Reviewer reviewer) throws UnauthorizedActionException {
         if (!this.isDevEnvironment) {
             throw new UnauthorizedActionException();

@@ -91,4 +91,7 @@ public class DeveloperReviewHandler {
         this.addReviewer(toAllocate);
         return toAllocate;
     }
+    public Feedback getFeedback(NonDeveloperConnection nonDeveloperConnection) {
+        return nonDeveloperConnection.fetchFeedback();
+    }
 }

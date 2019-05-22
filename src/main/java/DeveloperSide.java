@@ -3,4 +3,5 @@ public interface DeveloperSide {
     public void sendAbstraction(Abstraction abstraction, NonDeveloperSide nonDeveloper);
     public Results fetchResults();
     public Feedback fetchFeedback();
+    public void sendInitialReviewResults(InitialReviewResults initialReviewResults);
 }

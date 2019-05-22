@@ -9,9 +9,19 @@ public class GitHubClient {
         this.password = null;
     }
 
+    /**
+     * Sets the fields for that user so that they can be used to perform other tasks
+     * 
+     * @param username username fo the user
+     * @param password user password
+     * @throws BadLoginException
+     */
+    public void signIn(String username, String password) throws BadLoginException {
+        this.gitHubConnection.authenticateUser(username, password);
 
-    public void signIn(String username, String password) {
-        
+        // if no exception then the user is logged in
+        this.username = username;
+        this.password = password;
     }
 
 

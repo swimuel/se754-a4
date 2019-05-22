@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public interface GitHubConnection {
     
     /**
@@ -9,6 +11,5 @@ public interface GitHubConnection {
      * @throws BadLoginException if the username and password are incorrect
      */
     public void authenticateUser(String username, String password) throws BadLoginException;
-
     
 }

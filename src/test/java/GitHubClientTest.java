@@ -115,6 +115,21 @@ public class GitHubClientTest {
     }
 
     @Test
+    public void shouldNotStoreSourceFilesInGitHubClientAfterFailingFetch() throws BadLoginException {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        // create mock that returns null, thus imitating finding no source files
+        Mockito.when(mockedConnection.fetchSource("owner", "repoName", "src", null, "username", "password")).thenReturn(null);
+
+        HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
+        //check mock was called
+        Mockito.verify(mockedConnection).fetchSource("owner", "repoName", "src", null, "username", "password");
+        HashMap<String, String> storedFiles = user.getSourceFiles();
+        assertEquals(new HashMap<String, String>(), storedFiles);
+    }
+
+    @Test
     public void shouldFetchSourceFromPullRequest() throws BadLoginException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
@@ -164,6 +179,22 @@ public class GitHubClientTest {
         // check github connection was invoked 
         Mockito.verify(mockedConnection).fetchSourceFromPullRequest("owner", "repoName", 1, null, "username", "password");
         assertNotEquals(null, storedFiles);
+    }
+
+    @Test
+    public void shouldNotStoreSourceFilesInGitHubClientAfterFailingFetchFromPullRequest() throws BadLoginException {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        // create mock that returns null, thus imitating finding no source files
+        Mockito.when(mockedConnection.fetchSourceFromPullRequest("owner", "repoName", 1, null, "username", "password")).thenReturn(null);
+
+        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null);
+        HashMap<String, String> storedFiles = user.getSourceFiles();
+
+        // check github connection was invoked 
+        Mockito.verify(mockedConnection).fetchSourceFromPullRequest("owner", "repoName", 1, null, "username", "password");
+        assertEquals(new HashMap<String, String>(), storedFiles);
     }
 
     @Test(timeout = 10000)

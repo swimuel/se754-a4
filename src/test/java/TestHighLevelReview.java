@@ -8,6 +8,8 @@ import org.mockito.Mockito;
 import user.Developer;
 import user.Reviewer;
 
+import javax.xml.crypto.Data;
+
 public class TestHighLevelReview {
     private DeveloperConnection developerConnection;
     private Review review;
@@ -55,9 +57,11 @@ public class TestHighLevelReview {
 
     @Test
     public void receiveFeedbackFromDevSide() {
-        NonDeveloperConnection nonDevConnect = Mockito.mock(NonDeveloperConnection.class);
-        Mockito.doReturn(feedbackForm).when(nonDevConnect).fetchFeedback();
-        Feedback receivedFeedback = Mockito.mock(DeveloperReviewHandler.class).getFeedback(nonDevConnect);
+        NonDeveloperConnection nonDeveloperConnection = Mockito.mock(NonDeveloperConnection.class);
+        Mockito.doReturn(feedbackForm).when(nonDeveloperConnection).fetchFeedback();
+        DeveloperReviewHandler developerReviewHandler = new DeveloperReviewHandler(Mockito.mock(Review.class),Mockito.mock(Database.class));
+        Feedback receivedFeedback = developerReviewHandler.getFeedback(nonDeveloperConnection);
+        Mockito.verify(nonDeveloperConnection, Mockito.times(1)).fetchFeedback();
         assertEquals(receivedFeedback, feedbackForm);
     }
 

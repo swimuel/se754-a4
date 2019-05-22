@@ -183,4 +183,15 @@ public class GitHubClientTest {
         Mockito.verify(mockedConnection, Mockito.never()).startListeningForPullRequests(user, "username", "password", "owner", "repo", 0);
         assertEquals(-1, ret);
     }
+
+    @Test
+    public void shouldSetMostRecentPullRequestNumberWhenCalled() {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+
+        user.setMostRecentPullRequestNo(25);
+        int pullNo = user.getMostRecentPullRequestNo();
+
+        assertEquals(25, pullNo);
+    }
 }

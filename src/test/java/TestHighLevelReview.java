@@ -21,7 +21,7 @@ public class TestHighLevelReview {
     public void setup() {
         reviewAuthor = new Developer();
         reviewer = new Reviewer();
-        review = new Review(reviewAuthor, Mockito.mock(InitialReviewResults.class));
+        review = new Review(Mockito.mock(InitialReviewResults.class), reviewAuthor);
         try {
             review.addReviewer(reviewer);
         } catch (UnauthorizedActionException e) {

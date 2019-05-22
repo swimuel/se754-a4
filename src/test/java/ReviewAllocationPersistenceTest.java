@@ -21,7 +21,7 @@ public class ReviewAllocationPersistenceTest {
     @Before
     public void setup() {
         db = Mockito.mock(Database.class);
-        review = new Review(new Developer(),Mockito.mock(InitialReviewResults.class));
+        review = new Review(Mockito.mock(InitialReviewResults.class), new Developer());
         rh = new DeveloperReviewHandler(review, db);
         reviewer = new Reviewer();
     }

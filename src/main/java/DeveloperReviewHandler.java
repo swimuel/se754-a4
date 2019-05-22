@@ -26,6 +26,10 @@ public class DeveloperReviewHandler {
         return review.getResults();
     }
 
+    public Review getReview() {
+        return this.review;
+    }
+
     public void addReviewer(Reviewer reviewer) throws UnauthorizedActionException {
         this.review.addReviewer(reviewer);
         reviewer.incrementReviewCount();
@@ -95,6 +99,7 @@ public class DeveloperReviewHandler {
         this.addReviewer(toAllocate);
         return toAllocate;
     }
+
     public Feedback getFeedback(NonDeveloperConnection nonDeveloperConnection) {
         return nonDeveloperConnection.fetchFeedback();
     }

@@ -24,6 +24,13 @@ public class GitHubClient {
         this.password = password;
     }
 
+    /**
+     * Removes the username and password so that any further user actions will fail
+     */
+    public void signOut() {
+        this.username = null;
+        this.password = null;
+    }
 
     /**
      * Gets github username that is stored for the user

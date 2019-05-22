@@ -216,6 +216,46 @@ public class GitHubClientTest {
     }
 
     @Test
+    public void shouldMergeCodeAfterCodeReviewApproved() throws BadLoginException {
+        // set up required information
+        String owner = "username";
+        String repoName = "repo";
+        int pullRequestNo = 1;
+        String commitMessage = "merging";
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+
+        Mockito.when(mockedConnection.mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password")).thenReturn(0);
+        // try the merge
+        int ret = user.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
+		
+		Mockito.verify(mockedConnection).mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password");
+        // if return value is not zero then it failed in some way
+        assertEquals(ret, 0);
+    }
+
+    @Test
+    public void shouldFailMergeIfUserIsNotSignedIn() {
+        // set up required information
+        String owner = "username";
+        String repoName = "repo";
+        int pullRequestNo = 1;
+        String commitMessage = "merging";
+
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        
+        // try the merge
+        int ret = user.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
+		
+		// check github request not made if user not signed in
+		Mockito.verify(mockedConnection, Mockito.never()).mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password");
+        // if user is not logged in should return -1
+        assertEquals(-1, ret);
+    }
+
+    @Test
     public void shouldSetMostRecentPullRequestNumberWhenCalled() {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);

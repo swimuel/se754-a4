@@ -64,4 +64,21 @@ public interface GitHubConnection {
      * @return returns 0 immediately after starting the swing worker 
      */
     public int startListeningForPullRequests(GitHubClient user, String username, String password, String owner, String repo, int mostRecentPullRequestNo);
+
+    /**
+     * This method is called from the mergeChanges method in the GitHubClient class.
+     * It is used to automatically merge the pull request at pullRequestNo into master. 
+     * If it can not auto merge then it will return -2
+     * 
+     * @param owner         string owner of the repository 
+     * @param repoName      string name of the repository 
+     * @param pullRequestNo string number of the pull request
+     * @param commitMessage string the message to be added with the merge commit
+     * @param username      string github username 
+     * @param password      string github password
+     * 
+     * @return returns 0 if the code is succesfully merged, -2 if the merge is not possible, and -3 if
+     *         there is a merge error
+     */
+    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage, String username, String password);
 }

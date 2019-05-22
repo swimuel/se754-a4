@@ -24,8 +24,8 @@ public class TestHighLevelReview {
         abstraction = Mockito.mock(Abstraction.class);
         nonDevResults = Mockito.mock(InitialReviewResults.class);
         // reviewAuthor = new User(true);
-        review = new Review(results, abstraction, reviewAuthor);
-        highLevelReview = new Review(nonDevResults, abstraction, reviewAuthor);
+        review = new Review(results, reviewAuthor);
+        highLevelReview = new Review(nonDevResults, reviewAuthor);
         review.setReviewers(developer, nonDeveloper);
     }
 

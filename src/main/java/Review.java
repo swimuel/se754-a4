@@ -13,12 +13,11 @@ public class Review {
     private Abstraction abstraction;
     private boolean approved;
 
-    public Review(InitialReviewResults results, Abstraction abstraction, Developer author) {
+    public Review(InitialReviewResults results, Developer author) {
         this.reviewers = new ArrayList<>();
         this.results = results;
         this.author = author;
         this.isDevEnvironment = true;
-        this.abstraction = abstraction;
         this.approved = false;
     }
 

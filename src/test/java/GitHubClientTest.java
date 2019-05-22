@@ -216,7 +216,7 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldMergeCodeAfterCodeReviewApproved() throws BadLoginException {
+    public void shouldMergeCodeAfterCodeReviewApproved() throws BadLoginException, MergeException {
         // set up required information
         String owner = "username";
         String repoName = "repo";
@@ -236,7 +236,7 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldFailMergeIfUserIsNotSignedIn() {
+    public void shouldFailMergeIfUserIsNotSignedIn() throws MergeException {
         // set up required information
         String owner = "username";
         String repoName = "repo";
@@ -253,6 +253,26 @@ public class GitHubClientTest {
 		Mockito.verify(mockedConnection, Mockito.never()).mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password");
         // if user is not logged in should return -1
         assertEquals(-1, ret);
+    }
+
+    @Test
+    public void shouldThrowNewMergeExceptionWhenMergeFails() throws BadLoginException, MergeException {
+        // set up required information
+        String owner = "username";
+        String repoName = "repo";
+        int pullRequestNo = 1;
+        String commitMessage = "merging";
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+
+        Mockito.when(mockedConnection.mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password")).thenThrow(new MergeException());
+        // try the merge
+        int ret = user.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
+		
+		Mockito.verify(mockedConnection).mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password");
+        // if return value is not zero then it failed in some way
+        assertEquals(ret, 0);
     }
 
     @Test

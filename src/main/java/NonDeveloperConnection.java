@@ -1,5 +1,5 @@
 public interface NonDeveloperConnection {
-    public void sendInitialReviewResults(InitialReviewResults initialReviewResults);
-
+    public void sendReview(Review review);
+    public Feedback fetchFeedback();
 
 }

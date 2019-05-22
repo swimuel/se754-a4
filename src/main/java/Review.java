@@ -10,7 +10,7 @@ public class Review {
     private List<Reviewer> reviewers;
     private boolean approved;
     private InitialReviewResults initialReviewResults;
-    private Feedback feedback;
+    private static Feedback feedback;
 
     public Review(Developer author, InitialReviewResults initialReviewResults) {
         this.reviewers = new ArrayList<>();
@@ -20,12 +20,11 @@ public class Review {
         this.initialReviewResults = initialReviewResults;
     }
 
-    public InitialReviewResults getInitialReviewResults() {
-        return initialReviewResults;
-    }
-
-    public Feedback performReview(String comment, String codeChange) {
-        this.feedback = new Feedback(comment, codeChange);
+    public Feedback performReview(String comment, String codeChange) throws UnauthorizedActionException {
+        if (this.isDevEnvironment) {
+            throw new UnauthorizedActionException();
+        }
+        feedback = new Feedback(comment, codeChange);
         return feedback;
     }
 
@@ -40,8 +39,11 @@ public class Review {
 
         this.reviewers.add(reviewer);
     }
-    public void approveReview() {
-        this.approved = true;
+    public void approveReview() throws UnauthorizedActionException {
+        if (!this.isDevEnvironment) {
+            throw new UnauthorizedActionException();
+        }
+            this.approved = true;
     }
     public boolean getApprovalStatus() {
         return this.approved;

@@ -1,36 +1,24 @@
 public class NonDeveloperReviewHandler {
-    private Review review;
+    private static Review review;
     private DeveloperConnection developerConnection;
-    private NonDeveloperConnection nonDeveloperConnection;
 
-    public NonDeveloperReviewHandler(Review review, NonDeveloperConnection nonDeveloperConnection, DeveloperConnection developerConnection) {
-        this.review = review;
-        this.nonDeveloperConnection = nonDeveloperConnection;
+
+    public NonDeveloperReviewHandler(DeveloperConnection developerConnection) {
         this.developerConnection = developerConnection;
     }
 
-    public void sendInitialResults() {
-        nonDeveloperConnection.sendInitialReviewResults(review.getInitialReviewResults());
+    public Review receiveReview() {
+        review = developerConnection.fetchReview();
+        review.setDevEnvironment(false);
+        return review;
     }
 
-    public InitialReviewResults getInitialReviewResults(){
-        return review.getInitialReviewResults();
-    }
-
-    public void performHighLevelReview(String comments, String codeChanges) {
+    public void performHighLevelReview(String comments, String codeChanges) throws UnauthorizedActionException {
         review.performReview(comments, codeChanges);
     }
 
     public void submitFeedback(Feedback feedback) {
-//        nonDeveloperConnection.submitFeedback(feedback);
         developerConnection.sendFeedback(feedback);
     }
 
-    public Feedback getNonDeveloperFeedback() {
-        return developerConnection.fetchFeedback();
-    }
-
-    public Review getReviewFromFeedback() {
-        return this.review;
-    }
 }

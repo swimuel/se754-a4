@@ -1,4 +1,4 @@
 public interface DeveloperConnection {
-    public Feedback fetchFeedback();
+    public Review fetchReview();
     public void sendFeedback(Feedback feedback);
 }

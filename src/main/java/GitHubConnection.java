@@ -68,7 +68,7 @@ public interface GitHubConnection {
     /**
      * This method is called from the mergeChanges method in the GitHubClient class.
      * It is used to automatically merge the pull request at pullRequestNo into master. 
-     * If it can not auto merge then it will return -2
+     * If it can not auto merge then it will throw a MergeException
      * 
      * @param owner         string owner of the repository 
      * @param repoName      string name of the repository 
@@ -77,8 +77,8 @@ public interface GitHubConnection {
      * @param username      string github username 
      * @param password      string github password
      * 
-     * @return returns 0 if the code is succesfully merged, -2 if the merge is not possible, and -3 if
-     *         there is a merge error
+     * @return returns 0 if the code is succesfully merged, -2 if the merge is not possible, throws
+     *         a MergeException if there is an error
      */
     public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage, String username, String password) throws MergeException;
 

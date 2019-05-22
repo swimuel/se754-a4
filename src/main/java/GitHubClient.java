@@ -128,7 +128,7 @@ public class GitHubClient {
      * @param commitMessage message to be included in the merge
      * 
      * @return 0 on success, -1 if user is not logged in, -2 if source is not automatically 
-     *         mergeable, -3 for a merge error
+     *         mergeable, throws MergeException on failure
      */
     public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) throws MergeException {
         if (this.username == null) {

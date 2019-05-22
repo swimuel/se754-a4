@@ -10,9 +10,7 @@ public class InitialReviewResults {
         this.abstractions = abstractions;
         this.inspectionResults = inspectionResults;
     }
-    public List<Abstraction> getAbstractions() {
-        return abstractions;
-    }
+
     public SourceCode getSourceCode() {
         return sourceCode;
     }

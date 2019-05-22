@@ -13,9 +13,6 @@ public class NonDeveloperReviewHandler {
         return review;
     }
 
-    public void performHighLevelReview(String comments, String codeChanges) throws UnauthorizedActionException {
-        review.performReview(comments, codeChanges);
-    }
 
     public void submitFeedback(Feedback feedback) {
         developerConnection.sendFeedback(feedback);

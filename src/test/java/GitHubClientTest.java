@@ -255,7 +255,7 @@ public class GitHubClientTest {
         assertEquals(-1, ret);
     }
 
-    @Test
+    @Test(expected = MergeException.class)
     public void shouldThrowNewMergeExceptionWhenMergeFails() throws BadLoginException, MergeException {
         // set up required information
         String owner = "username";
@@ -268,11 +268,14 @@ public class GitHubClientTest {
 
         Mockito.when(mockedConnection.mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password")).thenThrow(new MergeException());
         // try the merge
-        int ret = user.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
-		
-		Mockito.verify(mockedConnection).mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password");
-        // if return value is not zero then it failed in some way
-        assertEquals(ret, 0);
+        try {
+            int ret = user.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
+            
+            Mockito.verify(mockedConnection).mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password");
+        }
+        catch(MergeException e) {
+            throw new MergeException();
+        }
     }
 
     @Test

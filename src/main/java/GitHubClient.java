@@ -130,7 +130,7 @@ public class GitHubClient {
      * @return 0 on success, -1 if user is not logged in, -2 if source is not automatically 
      *         mergeable, -3 for a merge error
      */
-    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) {
+    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) throws MergeException {
         if (this.username == null) {
             // user is not signed in
             return -1;

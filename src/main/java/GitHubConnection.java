@@ -80,7 +80,7 @@ public interface GitHubConnection {
      * @return returns 0 if the code is succesfully merged, -2 if the merge is not possible, and -3 if
      *         there is a merge error
      */
-    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage, String username, String password);
+    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage, String username, String password) throws MergeException;
 
     /**
      * This method is called from the createPullRequestComment method in the GitHubClient class.

@@ -24,19 +24,19 @@ public class GitHubClientTest {
         GitHubClient user = new GitHubClient(mockedConnection);
 
         user.signIn("username", "badPassword");
-        Mockito.verify(mockedConnection).authenticateUser("username", "password");
     }
 
     @Test
-    public void shouldNotStoreUsernameIfThereIsABadLoginException() {
+    public void shouldNotStoreUsernameIfThereIsABadLoginException() throws BadLoginException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
         try {
             Mockito.doThrow(new BadLoginException()).when(mockedConnection).authenticateUser("username", "badPassword");
             user.signIn("username", "badPassword");
-            Mockito.verify(mockedConnection).authenticateUser("username", "password");
+            
         } catch (BadLoginException e) {
             // check that the username was not stored after the login attempt
+            Mockito.verify(mockedConnection).authenticateUser("username", "badPassword");
             String username = user.getUsername();
             assertEquals(null, username);
         }

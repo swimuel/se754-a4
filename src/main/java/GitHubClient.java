@@ -139,6 +139,35 @@ public class GitHubClient {
     }
 
     /**
+     * Puts a comment on the pull request with id of pullRequestNumber
+     * 
+     * @param comment       the string comment to add to the pull request
+     * @param owner         string owner of the repo
+     * @param repo          string repo name 
+     * @param pullRequestNo int id of the pull request
+     * 
+     * @return returns 0 on success, -1 if the user is not logged in, and -2 if there
+     *         is an exception 
+     */
+    public int createPullRequestComment(String comment, String owner, String repo, int pullRequestNo){
+        return 0;
+    }
+
+    /**
+     * Used to create a comment with a code request change to a pull reqest with number pullRequestNo
+     * 
+     * @param owner         String owner of the repository 
+     * @param repo          String name of the repository 
+     * @param pullRequestNo int number of the pull request
+     * @param comment       String comment to add along with the change request.
+     * 
+     * @return returns 0 on success, -1 if user is not logged in, and -2 for an exception
+     */
+    public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment){
+        return 0;
+    }
+
+    /**
      * Gets github username that is stored for the user
      * @return string username or null if no username is currently 
      * stored
@@ -173,4 +202,12 @@ public class GitHubClient {
         return this.mostRecentPullRequestNo;
     }
 
+    /**
+     * Remove all of the currently stored source files
+     * from the hashmap
+     */
+    public void clearSourceFiles() {
+        this.sourceFiles.clear();
+    }
+    
 }

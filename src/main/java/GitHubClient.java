@@ -131,8 +131,11 @@ public class GitHubClient {
      *         mergeable, -3 for a merge error
      */
     public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) {
-        return pullRequestNo;
-
+        if (this.username == null) {
+            // user is not signed in
+            return -1;
+        }
+        return this.gitHubConnection.mergeChanges(owner, repoName, pullRequestNo, commitMessage, this.username, this.password);
     }
 
     /**

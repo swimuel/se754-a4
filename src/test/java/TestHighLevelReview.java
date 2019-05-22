@@ -55,7 +55,9 @@ public class TestHighLevelReview {
 
     @Test
     public void receiveFeedbackFromDevSide() {
-        Feedback receivedFeedback = Mockito.mock(DeveloperReviewHandler.class).getFeedback(Mockito.mock(NonDeveloperConnection.class));
+        NonDeveloperConnection nonDevConnect = Mockito.mock(NonDeveloperConnection.class);
+        Mockito.doReturn(feedbackForm).when(nonDevConnect).fetchFeedback();
+        Feedback receivedFeedback = Mockito.mock(DeveloperReviewHandler.class).getFeedback(nonDevConnect);
         assertEquals(receivedFeedback, feedbackForm);
     }
 

@@ -10,7 +10,6 @@ public class Review {
     private List<Reviewer> reviewers;
     private boolean approved;
     private InitialReviewResults initialReviewResults;
-    private static Feedback feedback;
 
     public Review(Developer author, InitialReviewResults initialReviewResults) {
         this.reviewers = new ArrayList<>();

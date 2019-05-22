@@ -24,7 +24,7 @@ public class AssignAndRemoveReviewersTest {
     @Before
     public void setup() {
         reviewAuthor = new Developer();
-        review = new Review(reviewAuthor, Mockito.mock(InitialReviewResults.class));
+        review = new Review(Mockito.mock(InitialReviewResults.class), reviewAuthor);
     }
 
     @Test

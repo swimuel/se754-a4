@@ -11,12 +11,16 @@ public class Review {
     private boolean approved;
     private InitialReviewResults initialReviewResults;
 
-    public Review(Developer author, InitialReviewResults initialReviewResults) {
+    public Review(InitialReviewResults initialReviewResults, Developer author) {
         this.reviewers = new ArrayList<>();
         this.author = author;
         this.isDevEnvironment = true;
         this.approved = false;
         this.initialReviewResults = initialReviewResults;
+    }
+
+    public InitialReviewResults getResults() {
+        return this.initialReviewResults;
     }
 
     public void addReviewer(Reviewer reviewer) throws UnauthorizedActionException {

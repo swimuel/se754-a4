@@ -21,6 +21,10 @@ public class DeveloperReviewHandler {
         review.setDevEnvironment(true);
     }
 
+    public InitialReviewResults getReviewResults() {
+        return review.getResults();
+    }
+
     public void addReviewer(Reviewer reviewer) throws UnauthorizedActionException {
         this.review.addReviewer(reviewer);
         reviewer.incrementReviewCount();

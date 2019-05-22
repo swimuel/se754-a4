@@ -2,6 +2,8 @@ import com.google.googlejavaformat.java.FormatterException;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.junit.Assert.assertEquals;
+
 public class ReviewGeneratorTest {
     @Test
     public void generateReviewPerformsAutomatedReviewAndInitialisesReviewHandler() throws FormatterException {
@@ -11,7 +13,7 @@ public class ReviewGeneratorTest {
         AutomatedCodeHandler ah = Mockito.mock(AutomatedCodeHandler.class);
         Mockito.when(ah.performAutomatedReview(code)).thenReturn(results);
 
-        ReviewGenerator rg = new ReviewGenerator(SourceCode code);
+        ReviewGenerator rg = new ReviewGenerator(code);
         DeveloperReviewHandler reviewHandler = rg.generateReviewHandler();
 
         Mockito.verify(ah, Mockito.times(1)).performAutomatedReview(code);

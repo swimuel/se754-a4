@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Review {
-    private Results results;
+    private InitialReviewResults results;
     private DeveloperSide developer;
     private NonDeveloperSide nonDeveloper;
     private Developer author;
@@ -13,7 +13,7 @@ public class Review {
     private Abstraction abstraction;
     private boolean approved;
 
-    public Review(Results results, Abstraction abstraction, Developer author) {
+    public Review(InitialReviewResults results, Abstraction abstraction, Developer author) {
         this.reviewers = new ArrayList<>();
         this.results = results;
         this.author = author;
@@ -22,14 +22,16 @@ public class Review {
         this.approved = false;
     }
 
-    public Results performReview() {
+    public InitialReviewResults performReview() {
         return this.results;
     }
 
-	public void sendAutomatedResults(Results autoResults) {
+    public InitialReviewResults getResults() { return this.results; }
+
+	public void sendAutomatedResults(InitialReviewResults autoResults) {
         this.developer.sendNonDev(results, nonDeveloper);
     } 
-    public void sendHighLevelResults(Results highLevelResults) {
+    public void sendHighLevelResults(InitialReviewResults highLevelResults) {
         this.nonDeveloper.sendDev(results, developer);
     }
     public void sendFeedback(Feedback feedback) {

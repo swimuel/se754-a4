@@ -1,7 +1,7 @@
 public interface NonDeveloperSide {
-    public void sendDev(Results results, DeveloperSide developer);
+    public void sendDev(InitialReviewResults results, DeveloperSide developer);
     public void sendFeedback(Feedback feedback, DeveloperSide developer);
-    public Results fetchResults();
+    public InitialReviewResults fetchResults();
     public Abstraction fetchAbstraction();
 
 }

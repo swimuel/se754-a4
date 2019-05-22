@@ -3,8 +3,6 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.util.HashMap;
 
-import com.google.googlejavaformat.java.FormatterException;
-
 import org.junit.Test;
 import org.mockito.Mockito;
 

@@ -5,11 +5,14 @@ public class GitHubClient {
     private String password;
     private GitHubConnection gitHubConnection;
     private HashMap<String, String> sourceFiles;
+    private int mostRecentPullRequestNo;
 
     public GitHubClient(GitHubConnection gitHubConnection){
         this.gitHubConnection = gitHubConnection;
         this.username = null;
         this.password = null;
+        this.sourceFiles = new HashMap<String, String>();
+        this.mostRecentPullRequestNo = 0;
     }
 
     /**
@@ -51,8 +54,19 @@ public class GitHubClient {
      *         contents or null if error
      */
     public HashMap<String, String> fetchSource(String owner, String repo, String path, String branch) {
-        return null;
+        if (this.username == null) {
+            return null; // if user is not logged in can not get contents
+        }
+        // use githubconnection object to retrieve the source
+        HashMap<String, String> source = this.gitHubConnection.fetchSource(owner, repo, path, branch, this.username,
+                this.password);
 
+        // if the source is not null add it to the map of all source files
+        if (source != null) {
+            this.sourceFiles.putAll(source);
+        }
+
+        return source;
     }
 
     /**
@@ -71,8 +85,19 @@ public class GitHubClient {
      *         base64 encoded content of the file.
      */
     public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo, String branch) {
+        if (this.username == null) {
+            return null; // if user is not logged in can not get contents
+        }
+        // use githubconneciton object to fetch source
+        HashMap<String, String> source = gitHubConnection.fetchSourceFromPullRequest(owner, repo, pullRequestNo, branch,
+                this.username, this.password);
 
-        return null;
+        // if some source code was fetched then add it to the map of all source files
+        if (source != null) {
+            this.sourceFiles.putAll(source);
+        }
+
+        return source;
     }
 
     /**
@@ -86,7 +111,11 @@ public class GitHubClient {
      * @return 0 on success or -1 if the user is not logged in
      */
     public int startListeningForPullRequests(String owner, String repo) {
-        return 0;
+        if (this.username == null) {
+            return -1;
+        }
+
+        return this.gitHubConnection.startListeningForPullRequests(this, this.username, this.password, owner, repo, this.mostRecentPullRequestNo);
     }
 
     /**
@@ -106,5 +135,13 @@ public class GitHubClient {
      */
     public HashMap<String, String> getSourceFiles() {
         return this.sourceFiles;
+    }
+
+    /**
+     * Set the most recent pull request number 
+     * @param pullNo the most recent pull request number
+     */
+    public void setMostRecentPullRequestNo(int pullRequestNo) {
+        this.mostRecentPullRequestNo = pullRequestNo;
     }
 }

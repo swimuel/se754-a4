@@ -40,6 +40,16 @@ public class GitHubClientTest {
     }
 
     @Test
+    public void shouldInvokeAuthenticateUserWhenUserSignsIn() throws BadLoginException {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+
+        // check username has been stored
+        Mockito.verify(mockedConnection).authenticateUser("username", "password");
+    }
+
+    @Test
     public void shouldRemoveUsernamePasswordAfterSignOut() throws BadLoginException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);

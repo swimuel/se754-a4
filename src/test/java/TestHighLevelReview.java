@@ -1,4 +1,5 @@
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import com.google.googlejavaformat.java.FormatterException;
 import org.junit.Before;
@@ -9,9 +10,8 @@ import user.Developer;
 import user.Reviewer;
 
 public class TestHighLevelReview {
-
-    private DeveloperSide developer;
-    private NonDeveloperSide nonDeveloper;
+    private DeveloperConnection developerConnection;
+    private NonDeveloperConnection nonDeveloperConnection;
     private Review review;
     private Developer reviewAuthor;
     private AutomatedCodeHandler ah;
@@ -19,9 +19,11 @@ public class TestHighLevelReview {
     private Reviewer reviewer;
     private NonDeveloperReviewHandler nonDeveloperReviewHandler;
     private Feedback feedbackForm;
+    private String comments, codeChanges;
 
     @Before
     public void setup() {
+
         ah = new AutomatedCodeHandler(Mockito.mock(Abstracter.class), new Linter(), Mockito.mock(Inspector.class));
         try {
             initialReviewResults = ah.performAutomatedReview(new SourceCode(""));
@@ -30,58 +32,57 @@ public class TestHighLevelReview {
         }
         reviewAuthor = new Developer();
         reviewer = new Reviewer();
-        review = new Review(reviewAuthor);
+        review = new Review(reviewAuthor, initialReviewResults);
         try {
             review.addReviewer(reviewer);
         } catch (UnauthorizedActionException e) {
             e.printStackTrace();
         }
-        nonDeveloper = Mockito.mock(NonDeveloperSide.class);
-        developer = Mockito.mock(DeveloperSide.class);
-        nonDeveloperReviewHandler = new NonDeveloperReviewHandler(initialReviewResults, review, nonDeveloper, developer);
+
+        nonDeveloperConnection = Mockito.mock(NonDeveloperConnection.class);
+        developerConnection = Mockito.mock(DeveloperConnection.class);
+
+        nonDeveloperReviewHandler = new NonDeveloperReviewHandler(review, nonDeveloperConnection, developerConnection);
     }
 
     @Test
     public void sendInitialReviewResults(){
         nonDeveloperReviewHandler.sendInitialResults();
-        Mockito.verify(developer, Mockito.times(1)).sendInitialReviewResults(initialReviewResults);
+        Mockito.verify(nonDeveloperConnection, Mockito.times(1)).sendInitialReviewResults(initialReviewResults);
     }
 
     @Test
     public void receiveResultsFromReviewerSide() {
-        Mockito.doReturn(initialReviewResults).when(nonDeveloper).getInitialReviewResults();
-        InitialReviewResults fetchedResults = nonDeveloperReviewHandler.getInitialReviewResults();
-        Mockito.verify(nonDeveloper, Mockito.times(1)).getInitialReviewResults();
+        InitialReviewResults fetchedResults = review.getInitialReviewResults();
         assertEquals(initialReviewResults, fetchedResults);
     }
 
     @Test
     public void performHighLevelReview() {
-        feedbackForm = Mockito.mock(Feedback.class);
-        nonDeveloperReviewHandler.performHighLevelReview(initialReviewResults,feedbackForm);
-        Mockito.verify(feedbackForm, Mockito.times(1)).writeFeedback(initialReviewResults.getAbstractions());
+        this.comments= "new comment";
+        this.codeChanges = "new code change";
+        nonDeveloperReviewHandler.performHighLevelReview(comments, codeChanges);
+        this.feedbackForm = review.getFeedback();
+        assertEquals(feedbackForm.getComments(), comments);
+        assertEquals(feedbackForm.getCodeChageReq(), codeChanges);
     }
 
     @Test
     public void submitFeedback() {
         nonDeveloperReviewHandler.submitFeedback(feedbackForm);
-        Mockito.verify(nonDeveloper, Mockito.times(1)).submitFeedback(feedbackForm);
-        Mockito.verify(nonDeveloper, Mockito.times(1)).sendFeedback(feedbackForm,developer);
-
+        Mockito.verify(developerConnection, Mockito.times(1)).sendFeedback(feedbackForm);
     }
+
     @Test
     public void receiveFeedbackFromDevSide() {
-        Mockito.doReturn(feedbackForm).when(developer).fetchFeedback();
-        Feedback nonDevFeedback = nonDeveloperReviewHandler.getNonDeveloperFeedback();
-        Mockito.verify(developer, Mockito.times(1)).fetchFeedback();
-        assertEquals(feedbackForm, nonDevFeedback);
+        Feedback receivedFeedback = review.getFeedback();
+        assertEquals(receivedFeedback, feedbackForm);
     }
 
     @Test
     public void approveReview() {
-        Review receivedReview = nonDeveloperReviewHandler.getReviewFromFeedback();
-        assertFalse( receivedReview.getApprovalStatus());
-        receivedReview.approveReview();
-        assertTrue(receivedReview.getApprovalStatus());
+        assertFalse( review.getApprovalStatus());
+        review.approveReview();
+        assertTrue(review.getApprovalStatus());
     }
 }

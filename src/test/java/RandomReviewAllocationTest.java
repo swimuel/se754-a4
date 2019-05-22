@@ -21,7 +21,7 @@ public class RandomReviewAllocationTest {
     @Before
     public void setup() {
         db = Mockito.mock(Database.class);
-        review = new Review(new Developer());
+        review = new Review(new Developer(), Mockito.mock(InitialReviewResults.class));
         rh = new DeveloperReviewHandler(review, db);
         random = Mockito.mock(Random.class);
     }

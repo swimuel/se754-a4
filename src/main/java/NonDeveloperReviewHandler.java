@@ -1,37 +1,33 @@
-import user.Reviewer;
-
 public class NonDeveloperReviewHandler {
     private Review review;
-    private InitialReviewResults initialReviewResults;
-    private DeveloperSide developer;
-    private NonDeveloperSide nonDeveloper;
+    private DeveloperConnection developerConnection;
+    private NonDeveloperConnection nonDeveloperConnection;
 
-    public NonDeveloperReviewHandler(InitialReviewResults initialReviewResults, Review review, NonDeveloperSide nonDeveloper, DeveloperSide developer) {
-        this.initialReviewResults = initialReviewResults;
+    public NonDeveloperReviewHandler(Review review, NonDeveloperConnection nonDeveloperConnection, DeveloperConnection developerConnection) {
         this.review = review;
-        this.nonDeveloper = nonDeveloper;
-        this.developer = developer;
+        this.nonDeveloperConnection = nonDeveloperConnection;
+        this.developerConnection = developerConnection;
     }
 
     public void sendInitialResults() {
-        developer.sendInitialReviewResults(this.initialReviewResults);
+        nonDeveloperConnection.sendInitialReviewResults(review.getInitialReviewResults());
     }
 
     public InitialReviewResults getInitialReviewResults(){
-        return nonDeveloper.getInitialReviewResults();
+        return review.getInitialReviewResults();
     }
 
-    public Feedback performHighLevelReview(InitialReviewResults initialReviewResults, Feedback feedbackForm) {
-        return feedbackForm.writeFeedback(initialReviewResults.getAbstractions());
+    public void performHighLevelReview(String comments, String codeChanges) {
+        review.performReview(comments, codeChanges);
     }
 
     public void submitFeedback(Feedback feedback) {
-        nonDeveloper.submitFeedback(feedback);
-        nonDeveloper.sendFeedback(feedback, developer);
+//        nonDeveloperConnection.submitFeedback(feedback);
+        developerConnection.sendFeedback(feedback);
     }
 
     public Feedback getNonDeveloperFeedback() {
-        return developer.fetchFeedback();
+        return developerConnection.fetchFeedback();
     }
 
     public Review getReviewFromFeedback() {

@@ -9,12 +9,28 @@ public class Review {
     private boolean isDevEnvironment;
     private List<Reviewer> reviewers;
     private boolean approved;
+    private InitialReviewResults initialReviewResults;
+    private Feedback feedback;
 
-    public Review(Developer author) {
+    public Review(Developer author, InitialReviewResults initialReviewResults) {
         this.reviewers = new ArrayList<>();
         this.author = author;
         this.isDevEnvironment = true;
         this.approved = false;
+        this.initialReviewResults = initialReviewResults;
+    }
+
+    public InitialReviewResults getInitialReviewResults() {
+        return initialReviewResults;
+    }
+
+    public Feedback performReview(String comment, String codeChange) {
+        this.feedback = new Feedback(comment, codeChange);
+        return feedback;
+    }
+
+    public Feedback getFeedback() {
+        return feedback;
     }
 
     public void addReviewer(Reviewer reviewer) throws UnauthorizedActionException {

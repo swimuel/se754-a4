@@ -11,6 +11,7 @@ import java.util.Random;
  * Defines the actions that developers can perform on a review.
  * Also manages persistence of the review in the database
  */
+
 public class DeveloperReviewHandler {
     private Review review;
     private Database db;
@@ -93,5 +94,8 @@ public class DeveloperReviewHandler {
 
         this.addReviewer(toAllocate);
         return toAllocate;
+    }
+    public Feedback getFeedback(NonDeveloperConnection nonDeveloperConnection) {
+        return nonDeveloperConnection.fetchFeedback();
     }
 }

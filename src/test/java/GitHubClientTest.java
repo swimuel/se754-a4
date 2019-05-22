@@ -140,8 +140,7 @@ public class GitHubClientTest {
     public void shouldReturnNullFromPullRequestFetchIfUserNotSignedIn() {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
-        AutomatedCodeHandler mockedHandler = Mockito.mock(AutomatedCodeHandler.class);
-        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null, mockedHandler);
+        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null);
 
         // check did not make github request
         Mockito.verify(mockedConnection, Mockito.never()).fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch", "username", "password");
@@ -161,7 +160,7 @@ public class GitHubClientTest {
             }
         });
 
-        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", "src", null);
+        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null);
         HashMap<String, String> storedFiles = user.getSourceFiles();
 
         // check github connection was invoked 

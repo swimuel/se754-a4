@@ -30,8 +30,26 @@ public class TestAutomatedInspection {
             e.printStackTrace();
         }
         Assert.assertEquals(lintedCode.getValue(), results.getSourceCode().getValue());
-        Mockito.verify(inspector, Mockito.times(1)).inspectCode(results.getSourceCode());
         Mockito.verify(abstracter, Mockito.times(1)).performAbstraction(results.getSourceCode());
+        Mockito.verify(inspector, Mockito.times(1)).inspectCode(results.getSourceCode());
+    }
+
+    @Test(expected = FormatterException.class)
+    public void fullReviewError() throws FormatterException {
+        SourceCode originalCode = new SourceCode("int x = 1;");
+        InitialReviewResults results = ah.performAutomatedReview(originalCode);
+    }
+
+    @Test
+    public void lintedCodeUsed(){
+        SourceCode code = new SourceCode("class test {}\n");
+        try {
+            InitialReviewResults results = ah.performAutomatedReview(code);
+        } catch (FormatterException e) {
+            e.printStackTrace();
+        }
+        Mockito.verify(abstracter, Mockito.times(0)).performAbstraction(code);
+        Mockito.verify(inspector, Mockito.times(0)).inspectCode(code);
     }
 
     // test linting

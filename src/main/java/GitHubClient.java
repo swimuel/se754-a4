@@ -150,7 +150,11 @@ public class GitHubClient {
      *         is an exception 
      */
     public int createPullRequestComment(String comment, String owner, String repo, int pullRequestNo){
-        return 0;
+        if(this.username == null){
+            return -1;
+        }
+
+        return this.gitHubConnection.createPullRequestComment(comment, owner, repo, pullRequestNo, this.username, this.password);
     }
 
     /**
@@ -164,7 +168,11 @@ public class GitHubClient {
      * @return returns 0 on success, -1 if user is not logged in, and -2 for an exception
      */
     public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment){
-        return 0;
+        if(this.username ==  null){
+            return -1;
+        }
+
+        return this.gitHubConnection.createCodeChangeRequest(owner, repo, pullRequestNo, comment, this.username, this.password);
     }
 
     /**
@@ -209,5 +217,5 @@ public class GitHubClient {
     public void clearSourceFiles() {
         this.sourceFiles.clear();
     }
-    
+
 }

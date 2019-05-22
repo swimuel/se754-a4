@@ -34,6 +34,12 @@ public class TestAutomatedInspection {
         Mockito.verify(abstracter, Mockito.times(1)).performAbstraction(results.getSourceCode());
     }
 
+    @Test(expected = FormatterException.class)
+    public void fullReviewError() throws FormatterException {
+        SourceCode originalCode = new SourceCode("int x = 1;");
+        InitialReviewResults results = ah.performAutomatedReview(originalCode);
+    }
+
     // test linting
     @Test
     public void lintSourceCode(){

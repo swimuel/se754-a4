@@ -10,7 +10,7 @@ import user.Reviewer;
 
 public class TestHighLevelReview {
     private DeveloperConnection developerConnection;
-    private static Review review;
+    private Review review;
     private Developer reviewAuthor;
     private Reviewer reviewer;
     private NonDeveloperReviewHandler nonDeveloperReviewHandler;
@@ -40,10 +40,11 @@ public class TestHighLevelReview {
 
     @Test
     public void shouldStoreFeedbackOnceReviewSubmitted() {
+        review.setDevEnvironment(false);
         this.comments= "new comment";
         this.codeChanges = "new code change";
         try {
-            this.nonDeveloperReviewHandler.performHighLevelReview(comments, codeChanges);
+            review.performReview(comments, codeChanges);
         } catch (UnauthorizedActionException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,5 @@
 public class NonDeveloperReviewHandler {
-    private static Review review;
+    private Review review;
     private DeveloperConnection developerConnection;
 
 

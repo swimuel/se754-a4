@@ -29,6 +29,8 @@ public class TestHighLevelReview {
         }
         developerConnection = Mockito.mock(DeveloperConnection.class);
         nonDeveloperReviewHandler = new NonDeveloperReviewHandler(developerConnection);
+        this.comments= "new comment";
+        this.codeChanges = "new code change";
     }
 
     @Test
@@ -41,8 +43,6 @@ public class TestHighLevelReview {
     @Test
     public void shouldStoreFeedbackOnceReviewSubmitted() {
         review.setDevEnvironment(false);
-        this.comments= "new comment";
-        this.codeChanges = "new code change";
         try {
             review.performReview(comments, codeChanges);
         } catch (UnauthorizedActionException e) {
@@ -66,10 +66,26 @@ public class TestHighLevelReview {
     }
 
     @Test
-    public void approveReview() throws UnauthorizedActionException {
+    public void approveDevReview() throws UnauthorizedActionException {
         review.setDevEnvironment(true);
         assertFalse( review.getApprovalStatus());
         review.approveReview();
         assertTrue(review.getApprovalStatus());
     }
+
+    @Test(expected = UnauthorizedActionException.class)
+    public void approveNonDevReview() throws UnauthorizedActionException {
+        review.setDevEnvironment(false);
+        assertFalse( review.getApprovalStatus());
+        review.approveReview();
+        assertTrue(review.getApprovalStatus());
+    }
+
+    @Test(expected = UnauthorizedActionException.class)
+    public void performNonDevReview() throws UnauthorizedActionException {
+        review.setDevEnvironment(true);
+        review.performReview(comments, codeChanges);
+    }
+
+
 }

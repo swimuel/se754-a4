@@ -8,8 +8,6 @@ import org.mockito.Mockito;
 import user.Developer;
 import user.Reviewer;
 
-import javax.xml.crypto.Data;
-
 public class TestHighLevelReview {
     private DeveloperConnection developerConnection;
     private Review review;

@@ -31,7 +31,6 @@ public class GitHubIntegrationFlowTest {
         Mockito.verify(mockedConnection).fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch", "username", "password");
 
         Mockito.verify(mockedGenerator).generateAndSendReview((Matchers.anyListOf(SourceCode.class)), Mockito.any(Developer.class));
-
     }
 
     @Test

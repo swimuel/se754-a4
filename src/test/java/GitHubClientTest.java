@@ -3,13 +3,15 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.util.HashMap;
 
+import com.google.googlejavaformat.java.FormatterException;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import user.Developer;
 
 public class GitHubClientTest {
-    
+
     @Test
     public void shouldStoreUsernamePasswordAfterSignIn() throws BadLoginException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
@@ -38,7 +40,7 @@ public class GitHubClientTest {
         try {
             Mockito.doThrow(new BadLoginException()).when(mockedConnection).authenticateUser("username", "badPassword");
             user.signIn("username", "badPassword");
-            
+
         } catch (BadLoginException e) {
             // check that the username was not stored after the login attempt
             Mockito.verify(mockedConnection).authenticateUser("username", "badPassword");
@@ -68,12 +70,13 @@ public class GitHubClientTest {
         user.signIn("username", "password");
         // create mock that returns a non empty HashMap, thus imitating finding at least
         // one source file
-        Mockito.when(mockedConnection.fetchSource("owner", "repoName", "src", null, "username", "password")).thenReturn(new HashMap<String, String>() {
-            private static final long serialVersionUID = 1L;
-            {
-                put("test", "passed");
-            }
-        });
+        Mockito.when(mockedConnection.fetchSource("owner", "repoName", "src", null, "username", "password"))
+                .thenReturn(new HashMap<String, String>() {
+                    private static final long serialVersionUID = 1L;
+                    {
+                        put("test", "passed");
+                    }
+                });
 
         HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
         Mockito.verify(mockedConnection).fetchSource("owner", "repoName", "src", null, "username", "password");
@@ -88,8 +91,9 @@ public class GitHubClientTest {
 
         HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
 
-        //dont bother contacting github if user is not signed in
-        Mockito.verify(mockedConnection, Mockito.never()).fetchSource("owner", "repoName", "src", null, "username", "password");
+        // dont bother contacting github if user is not signed in
+        Mockito.verify(mockedConnection, Mockito.never()).fetchSource("owner", "repoName", "src", null, "username",
+                "password");
 
         // if the user has not signed in then the fetchSource call should return null
         assertEquals(null, files);
@@ -102,15 +106,16 @@ public class GitHubClientTest {
         user.signIn("username", "password");
         // create mock that returns a non empty HashMap, thus imitating finding at least
         // one source file
-        Mockito.when(mockedConnection.fetchSource("owner", "repoName", "src", null, "username", "password")).thenReturn(new HashMap<String, String>() {
-            private static final long serialVersionUID = 1L;
-            {
-                put("test", "passed");
-            }
-        });
+        Mockito.when(mockedConnection.fetchSource("owner", "repoName", "src", null, "username", "password"))
+                .thenReturn(new HashMap<String, String>() {
+                    private static final long serialVersionUID = 1L;
+                    {
+                        put("test", "passed");
+                    }
+                });
 
         HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
-        //check mock was called
+        // check mock was called
         Mockito.verify(mockedConnection).fetchSource("owner", "repoName", "src", null, "username", "password");
         HashMap<String, String> storedFiles = user.getSourceFiles();
         assertNotEquals(null, storedFiles);
@@ -122,17 +127,18 @@ public class GitHubClientTest {
         GitHubClient user = new GitHubClient(mockedConnection);
         user.signIn("username", "password");
         // create mock that returns null, thus imitating finding no source files
-        Mockito.when(mockedConnection.fetchSource("owner", "repoName", "src", null, "username", "password")).thenReturn(null);
+        Mockito.when(mockedConnection.fetchSource("owner", "repoName", "src", null, "username", "password"))
+                .thenReturn(null);
 
         HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
-        //check mock was called
+        // check mock was called
         Mockito.verify(mockedConnection).fetchSource("owner", "repoName", "src", null, "username", "password");
         HashMap<String, String> storedFiles = user.getSourceFiles();
         assertEquals(new HashMap<String, String>(), storedFiles);
     }
 
     @Test
-    public void shouldFetchSourceFromPullRequest() throws BadLoginException {
+    public void shouldFetchSourceFromPullRequest() throws BadLoginException, FormatterException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
         user.signIn("username", "password");
@@ -154,7 +160,7 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldReturnNullFromPullRequestFetchIfUserNotSignedIn() {
+    public void shouldReturnNullFromPullRequestFetchIfUserNotSignedIn() throws FormatterException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
 
@@ -168,7 +174,7 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldStoreSourceFilesInGitHubClientAfterFetchingFromPullRequest() throws BadLoginException {
+    public void shouldStoreSourceFilesInGitHubClientAfterFetchingFromPullRequest() throws BadLoginException, FormatterException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
         user.signIn("username", "password");
@@ -192,7 +198,7 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldNotStoreSourceFilesInGitHubClientAfterFailingFetchFromPullRequest() throws BadLoginException {
+    public void shouldNotStoreSourceFilesInGitHubClientAfterFailingFetchFromPullRequest() throws BadLoginException, FormatterException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
         user.signIn("username", "password");

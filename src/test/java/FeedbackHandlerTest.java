@@ -13,14 +13,13 @@ import static org.junit.Assert.assertEquals;
 public class FeedbackHandlerTest {
     GitHubClient ghc;
     NonDeveloperConnection ndc;
-    ReviewGenerator rg;
     FeedbackHandler fh;
 
     @Before
     public void setup() {
         ghc = Mockito.mock(GitHubClient.class);
         ndc = Mockito.mock(NonDeveloperConnection.class);
-        devFlow = Mockito.mock(DeveloperFlow.class);
+        fh = new FeedbackHandler(ndc);
     }
 
     @Test
@@ -29,8 +28,10 @@ public class FeedbackHandlerTest {
         Mockito.when(ndc.fetchFeedback()).thenReturn(feedback);
 
         fh.receiveFeedback();
-        
+
         Mockito.verify(ndc, Mockito.times(1)).fetchFeedback();
         assertEquals(feedback, fh.getFeedback());
     }
+
+    
 }

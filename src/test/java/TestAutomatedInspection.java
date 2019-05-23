@@ -116,7 +116,13 @@ public class TestAutomatedInspection {
         SourceCode code = new SourceCode("int x = 0;\n String y = \"useless part\"");
         ah.performInspection(code);
         Mockito.verify(inspector, Mockito.times(1)).inspectCode(code);
+    }
 
+    @Test
+    public void classifyInspection(){
+        SourceCode code = new SourceCode("int x = 0;\n String y = \"useless part\"");
+        ah.performInspection(code);
+        Mockito.verify(inspector, Mockito.times(1)).classifyResults(code);
     }
 
     // test abstraction

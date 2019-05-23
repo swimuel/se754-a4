@@ -214,16 +214,20 @@ public class GitHubClientTest {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
         user.signIn("username", "password");
-        user.startListeningForPullRequests("owner", "repo");
-        Mockito.verify(mockedConnection).startListeningForPullRequests(user, "username", "password", "owner", "repo", 0);
+
+        ReviewGenerator mockedGenerator = Mockito.mock(ReviewGenerator.class);
+        user.startListeningForPullRequests("owner", "repo", mockedGenerator);
+
+        Mockito.verify(mockedConnection).startListeningForPullRequests(user, "username", "password", "owner", "repo", 0, mockedGenerator);
     }
 
     @Test
     public void shouldReturnNegativeOneIfUserIsNotLoggedInAndTriesToListenForPullRequests() {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
-        int ret = user.startListeningForPullRequests("owner", "repo");
-        Mockito.verify(mockedConnection, Mockito.never()).startListeningForPullRequests(user, "username", "password", "owner", "repo", 0);
+        ReviewGenerator mockedGenerator = Mockito.mock(ReviewGenerator.class);
+        int ret = user.startListeningForPullRequests("owner", "repo", mockedGenerator);
+        Mockito.verify(mockedConnection, Mockito.never()).startListeningForPullRequests(user, "username", "password", "owner", "repo", 0, mockedGenerator);
         assertEquals(-1, ret);
     }
 

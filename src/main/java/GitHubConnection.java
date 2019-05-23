@@ -60,10 +60,11 @@ public interface GitHubConnection {
      * @param repo                     string name of the repository
      * @param mostRecentPullRequestNo  int number that stores the most recent pull request retieved so that 
      *                                 it does not retireve it more than once
+     * @param reviewGenerator          used to start the review process once a pull requst is retrieved
      * 
      * @return returns 0 immediately after starting the swing worker 
      */
-    public int startListeningForPullRequests(GitHubClient user, String username, String password, String owner, String repo, int mostRecentPullRequestNo);
+    public int startListeningForPullRequests(GitHubClient user, String username, String password, String owner, String repo, int mostRecentPullRequestNo, ReviewGenerator reviewGenerator);
 
     /**
      * This method is called from the mergeChanges method in the GitHubClient class.

@@ -1,5 +1,7 @@
 import java.util.HashMap;
 
+import user.Developer;
+
 public class GitHubClient {
     private String username;
     private String password;
@@ -84,7 +86,8 @@ public class GitHubClient {
      * @return HashMap with the keys as full names of the files and values as the
      *         base64 encoded content of the file.
      */
-    public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo, String branch) {
+    public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo, String branch, 
+            ReviewGenerator reviewGenerator, Developer dev) {
         if (this.username == null) {
             return null; // if user is not logged in can not get contents
         }
@@ -95,6 +98,7 @@ public class GitHubClient {
         // if some source code was fetched then add it to the map of all source files
         if (source != null) {
             this.sourceFiles.putAll(source);
+
         }
 
         return source;
@@ -105,17 +109,18 @@ public class GitHubClient {
      * When there is a pull requeset it will fetch the source code and put it in the this.sourceFiles 
      * field of this class.
      * 
-     * @param owner String owner of repo to listen on 
-     * @param repo  String name of the repository
+     * @param owner            String owner of repo to listen on 
+     * @param repo             String name of the repository
+     * @param reviewGenerator  used to start the review process once pull request is detected
      * 
      * @return 0 on success or -1 if the user is not logged in
      */
-    public int startListeningForPullRequests(String owner, String repo) {
+    public int startListeningForPullRequests(String owner, String repo, ReviewGenerator reviewGenerator) {
         if (this.username == null) {
             return -1;
         }
 
-        return this.gitHubConnection.startListeningForPullRequests(this, this.username, this.password, owner, repo, this.mostRecentPullRequestNo);
+        return this.gitHubConnection.startListeningForPullRequests(this, this.username, this.password, owner, repo, this.mostRecentPullRequestNo, reviewGenerator);
     }
 
     /**

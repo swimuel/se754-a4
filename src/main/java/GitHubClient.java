@@ -1,4 +1,12 @@
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Base64.Decoder;
+
+import com.google.googlejavaformat.java.FormatterException;
+
+import user.Developer;
 
 public class GitHubClient {
     private String username;
@@ -7,7 +15,7 @@ public class GitHubClient {
     private HashMap<String, String> sourceFiles;
     private int mostRecentPullRequestNo;
 
-    public GitHubClient(GitHubConnection gitHubConnection){
+    public GitHubClient(GitHubConnection gitHubConnection) {
         this.gitHubConnection = gitHubConnection;
         this.username = null;
         this.password = null;
@@ -75,16 +83,22 @@ public class GitHubClient {
      * branch 'branch'. The source is returned in a hashmap with the full file name
      * as the key and the value being the base64 encoded content of the file.
      * 
-     * @param owner                 String owner of repository
-     * @param repo                  String name of repository
-     * @param pullRequestNo         int number representing the pull request
-     * @param branch                String name of the branch to get the source from
-     * @param automatedCodeHandler  used tp start the automatic code inspection process after the code has been fetched
+     * @param owner                String owner of repository
+     * @param repo                 String name of repository
+     * @param pullRequestNo        int number representing the pull request
+     * @param branch               String name of the branch to get the source from
+     * @param automatedCodeHandler used tp start the automatic code inspection
+     *                             process after the code has been fetched
+     * @param reviewGenerator      used to start the review process once the code is
+     *                             fetched
+     * @param dev                  developer used to start the review process
      * 
      * @return HashMap with the keys as full names of the files and values as the
      *         base64 encoded content of the file.
+     * @throws FormatterException
      */
-    public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo, String branch) {
+    public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo,
+            String branch, ReviewGenerator reviewGenerator, Developer dev) throws FormatterException {
         if (this.username == null) {
             return null; // if user is not logged in can not get contents
         }
@@ -95,6 +109,17 @@ public class GitHubClient {
         // if some source code was fetched then add it to the map of all source files
         if (source != null) {
             this.sourceFiles.putAll(source);
+
+            // start the review process
+            List<SourceCode> code = new ArrayList<SourceCode>();
+            Decoder decoder = Base64.getDecoder();
+
+            for(String key : source.keySet()) {
+                // convert from base64 to string
+                String fileContent = decoder.decode(source.get(key)).toString();
+                code.add(new SourceCode(key, fileContent));
+            }
+            reviewGenerator.generateAndSendReview(code, dev);
         }
 
         return source;
@@ -105,17 +130,18 @@ public class GitHubClient {
      * When there is a pull requeset it will fetch the source code and put it in the this.sourceFiles 
      * field of this class.
      * 
-     * @param owner String owner of repo to listen on 
-     * @param repo  String name of the repository
+     * @param owner            String owner of repo to listen on 
+     * @param repo             String name of the repository
+     * @param reviewGenerator  used to start the review process once pull request is detected
      * 
      * @return 0 on success or -1 if the user is not logged in
      */
-    public int startListeningForPullRequests(String owner, String repo) {
+    public int startListeningForPullRequests(String owner, String repo, ReviewGenerator reviewGenerator) {
         if (this.username == null) {
             return -1;
         }
 
-        return this.gitHubConnection.startListeningForPullRequests(this, this.username, this.password, owner, repo, this.mostRecentPullRequestNo);
+        return this.gitHubConnection.startListeningForPullRequests(this, this.username, this.password, owner, repo, this.mostRecentPullRequestNo, reviewGenerator);
     }
 
     /**

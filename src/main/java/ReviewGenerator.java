@@ -1,3 +1,5 @@
+import java.util.List;
+
 import com.google.googlejavaformat.java.FormatterException;
 import user.Developer;
 
@@ -25,13 +27,13 @@ public class ReviewGenerator {
      * Passes it to the user to perform allocation then sends it to the
      * reviewer side of the tool.
      */
-    public void generateAndSendReview(SourceCode code, Developer author) throws FormatterException {
+    public void generateAndSendReview(List<SourceCode> code, Developer author) throws FormatterException {
         generateReviewHandler(code, author);
         allocateReviewers(rh);
         sendReview(rh.getReview());
     }
 
-    public void generateReviewHandler(SourceCode code, Developer author) throws FormatterException{
+    public void generateReviewHandler(List<SourceCode> code, Developer author) throws FormatterException{
         InitialReviewResults results = ah.performAutomatedReview(code);
         Review review = new Review(results, author);
         this.rh = new DeveloperReviewHandler(review, this.db);

@@ -1,4 +1,6 @@
+import java.util.List;
+
 public interface Inspector {
-    InitialInspectionResults inspectCode(SourceCode code);
+    InitialInspectionResults inspectCode(List<SourceCode> code);
     InspectionResults classifyResults(InitialInspectionResults results);
 }

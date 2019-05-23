@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
 
@@ -8,11 +11,15 @@ public class Linter {
         this.formatter = new Formatter();
     }
 
-    public SourceCode lint(SourceCode sourceCode) throws FormatterException {
+    public List<SourceCode> lint(List<SourceCode> sourceCode) throws FormatterException {
         // takes a source code object, formats it using google java formatter
         // returns a source code object of the linted source code
-        String linted = null;
-        linted = formatter.formatSource(sourceCode.getValue());
-        return new SourceCode(linted);
+        List<SourceCode> outCode = new ArrayList<SourceCode>();
+        for(SourceCode sc : sourceCode){
+            String linted = null;
+            linted = formatter.formatSource(sc.getValue());
+            outCode.add(new SourceCode(sc.getName(), linted));
+        }
+        return outCode;
     }
 }

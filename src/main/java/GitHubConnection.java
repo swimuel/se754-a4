@@ -69,7 +69,7 @@ public interface GitHubConnection {
     /**
      * This method is called from the mergeChanges method in the GitHubClient class.
      * It is used to automatically merge the pull request at pullRequestNo into master. 
-     * If it can not auto merge then it will return -2
+     * If it can not auto merge then it will throw a MergeException
      * 
      * @param owner         string owner of the repository 
      * @param repoName      string name of the repository 
@@ -78,8 +78,42 @@ public interface GitHubConnection {
      * @param username      string github username 
      * @param password      string github password
      * 
-     * @return returns 0 if the code is succesfully merged, -2 if the merge is not possible, and -3 if
-     *         there is a merge error
+     * @return returns 0 if the code is succesfully merged, -2 if the merge is not possible, throws
+     *         a MergeException if there is an error
      */
-    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage, String username, String password);
+    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage, String username, String password) throws MergeException;
+
+    /**
+     * This method is called from the createPullRequestComment method in the GitHubClient class.
+     * It is used to post a comment on a pull request at pullRequestNo at the repository named
+     * "owner/repo". 
+     * 
+     * @param comment       string the comment to leave on the pull request
+     * @param owner         string the owner of the repository
+     * @param repo          string name of the repository 
+     * @param pullRequestNo int number of the pull request 
+     * @param username      string github username 
+     * @param password      string github password
+     * 
+     * @return 0 on successfully posting the comment or -2 if there is an error
+     */
+    public int createPullRequestComment(String comment, String owner, String repo, int pullRequestNo, String username, String password);
+
+    /**
+     * This method is called from the createCodeChangeRequest method in the GitHubClient class.
+     * Creates a code change request on the pull request numbered pullRequestNo on the repository 
+     * named "owner/repo". A code change request is really just a comment that requires the developers
+     * to make a change before merging.
+     * 
+     * @param owner         string owner of the repository 
+     * @param repo          string name of the repository 
+     * @param pullRequestNo int number of the pull request
+     * @param comment       string comment to be added along with the change request 
+     * @param username      string github username
+     * @param passwrod      string github password
+     * 
+     * @return 0 if the code change request is posted succesfully, or -2 if there is some error
+     */
+    public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment, String username, String password);
+
 }

@@ -23,7 +23,7 @@ public class AutomatedCodeHandler {
     }
 
     public InspectionResults performInspection(List<SourceCode> code){
-        return inspector.inspectCode(code);
+        return inspector.classifyResults(inspector.inspectCode(code));
     }
 
     public InitialReviewResults performAutomatedReview(List<SourceCode> code) throws FormatterException {

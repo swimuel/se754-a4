@@ -2,10 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.googlejavaformat.java.FormatterException;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class TestAutomatedInspection {
     private AutomatedCodeHandler ah;
@@ -16,8 +18,8 @@ public class TestAutomatedInspection {
     @Before
     public void setup() {
         linter = new Linter();
-        inspector = Mockito.mock(Inspector.class);
-        abstracter = Mockito.mock(Abstracter.class);
+        inspector = mock(Inspector.class);
+        abstracter = mock(Abstracter.class);
         ah = new AutomatedCodeHandler(abstracter, linter, inspector);
     }
 
@@ -33,9 +35,9 @@ public class TestAutomatedInspection {
         } catch (FormatterException e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(lintedCode.getValue(), results.getSourceCode().get(0).getValue());
-        Mockito.verify(abstracter, Mockito.times(1)).performAbstraction(results.getSourceCode());
-        Mockito.verify(inspector, Mockito.times(1)).inspectCode(results.getSourceCode());
+        assertEquals(lintedCode.getValue(), results.getSourceCode().get(0).getValue());
+        verify(abstracter, times(1)).performAbstraction(results.getSourceCode());
+        verify(inspector, times(1)).inspectCode(results.getSourceCode());
     }
 
     @Test(expected = FormatterException.class)
@@ -54,8 +56,8 @@ public class TestAutomatedInspection {
         } catch (FormatterException e) {
             e.printStackTrace();
         }
-        Mockito.verify(abstracter, Mockito.times(0)).performAbstraction(code);
-        Mockito.verify(inspector, Mockito.times(0)).inspectCode(code);
+        verify(abstracter, times(0)).performAbstraction(code);
+        verify(inspector, times(0)).inspectCode(code);
     }
 
     // test linting
@@ -71,7 +73,7 @@ public class TestAutomatedInspection {
         } catch (FormatterException e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(lintedCode.get(0).getValue(), receivedCode.get(0).getValue());
+        assertEquals(lintedCode.get(0).getValue(), receivedCode.get(0).getValue());
     }
 
     @Test(expected = FormatterException.class)
@@ -91,7 +93,7 @@ public class TestAutomatedInspection {
         } catch (FormatterException e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(originalCode.get(0).getValue(), receivedLintedCode.get(0).getValue());
+        assertEquals(originalCode.get(0).getValue(), receivedLintedCode.get(0).getValue());
     }
 
     @Test
@@ -106,7 +108,7 @@ public class TestAutomatedInspection {
         } catch (FormatterException e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(lintedCode.get(0).getValue(), receivedCode.get(0).getValue());
+        assertEquals(lintedCode.get(0).getValue(), receivedCode.get(0).getValue());
     }
 
     @Test
@@ -121,7 +123,7 @@ public class TestAutomatedInspection {
         } catch (FormatterException e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(lintedCode.get(0).getValue(), receivedCode.get(0).getValue());
+        assertEquals(lintedCode.get(0).getValue(), receivedCode.get(0).getValue());
     }
 
     // test inspection
@@ -130,8 +132,16 @@ public class TestAutomatedInspection {
         List<SourceCode> code = new ArrayList<SourceCode>();
         code.add(new SourceCode("filename", "int x = 0;\n String y = \"useless part\""));
         ah.performInspection(code);
-        Mockito.verify(inspector, Mockito.times(1)).inspectCode(code);
+        verify(inspector, times(1)).inspectCode(code);
+    }
 
+    @Test
+    public void classifyInspection(){
+        List<SourceCode> code = new ArrayList<SourceCode>();
+        code.add(new SourceCode("filename", "int x = 0;\n String y = \"useless part\""));
+        doReturn(new InitialInspectionResults()).when(inspector).inspectCode(code);
+        ah.performInspection(code);
+        verify(inspector, times(1)).classifyResults(any(InitialInspectionResults.class));
     }
 
     // test abstraction
@@ -140,6 +150,6 @@ public class TestAutomatedInspection {
         List<SourceCode> code = new ArrayList<SourceCode>();
         code.add(new SourceCode("filename", "int x = 0;\n String y = \"useless part\""));
         ah.performAbstraction(code);
-        Mockito.verify(abstracter, Mockito.times(1)).performAbstraction(code);
+        verify(abstracter, times(1)).performAbstraction(code);
     }
 }

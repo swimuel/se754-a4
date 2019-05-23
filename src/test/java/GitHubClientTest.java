@@ -238,7 +238,7 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldMergeCodeAfterCodeReviewApproved() throws BadLoginException {
+    public void shouldMergeCodeAfterCodeReviewApproved() throws BadLoginException, MergeException {
         // set up required information
         String owner = "username";
         String repoName = "repo";
@@ -258,7 +258,7 @@ public class GitHubClientTest {
     }
 
     @Test
-    public void shouldFailMergeIfUserIsNotSignedIn() {
+    public void shouldFailMergeIfUserIsNotSignedIn() throws MergeException {
         // set up required information
         String owner = "username";
         String repoName = "repo";
@@ -277,6 +277,29 @@ public class GitHubClientTest {
         assertEquals(-1, ret);
     }
 
+    @Test(expected = MergeException.class)
+    public void shouldThrowNewMergeExceptionWhenMergeFails() throws BadLoginException, MergeException {
+        // set up required information
+        String owner = "username";
+        String repoName = "repo";
+        int pullRequestNo = 1;
+        String commitMessage = "merging";
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+
+        Mockito.when(mockedConnection.mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password")).thenThrow(new MergeException());
+        // try the merge
+        try {
+            int ret = user.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
+            
+            Mockito.verify(mockedConnection).mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password");
+        }
+        catch(MergeException e) {
+            throw new MergeException();
+        }
+    }
+
     @Test
     public void shouldSetMostRecentPullRequestNumberWhenCalled() {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
@@ -286,5 +309,83 @@ public class GitHubClientTest {
         int pullNo = user.getMostRecentPullRequestNo();
 
         assertEquals(25, pullNo);
+    }
+
+    @Test
+    public void shouldPostCommentsToGitHubPullRequestDiscussionPageWhenReviewersMakeComments()
+            throws BadLoginException {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        // make mock object imitate a successful return from the createPullRequestComment method
+        Mockito.when(mockedConnection.createPullRequestComment("test comment", "owner", "repo", 1, "username", "password")).thenReturn(0);
+
+        int ret = user.createPullRequestComment("test comment", "owner", "repo", 1);
+		
+		Mockito.verify(mockedConnection).createPullRequestComment("test comment", "owner", "repo", 1, "username", "password");
+
+        assertEquals(0, ret);
+    }
+
+    @Test
+    public void shouldNotPostCommentIfUserIsNotSignedIn() {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+
+        int ret = user.createPullRequestComment("test comment", "owner", "repo", 1);
+		
+		// check github request not made if user not signed in
+		Mockito.verify(mockedConnection, Mockito.never()).createPullRequestComment("test comment", "owner", "repo", 1, "username", "password");
+		
+        // should return -1 if the user is not signed in
+        assertEquals(-1, ret);
+    }
+
+    @Test
+    public void shouldPostCodeChangeRequestWhenReviewersSubmitReviewContainingTheRequest() throws BadLoginException {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        Mockito.when(mockedConnection.createCodeChangeRequest("owner", "repo", 1, "Please change this", "username", "password")).thenReturn(0);
+
+        int ret = user.createCodeChangeRequest("owner", "repo", 1, "Please change this");
+		
+		Mockito.verify(mockedConnection).createCodeChangeRequest("owner", "repo", 1, "Please change this", "username", "password");
+
+        assertEquals(0, ret);
+    }
+
+    @Test
+    public void shouldNotPostCodeChangeRequestWhenUserNotSignedIn() {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+
+        int ret = user.createCodeChangeRequest("owner", "repo", 1, "Please change this");
+		
+		//check github request not made if user not signed in
+		Mockito.verify(mockedConnection, Mockito.never()).createCodeChangeRequest("owner", "repo", 1, "Please change this", "username", "password");
+
+        assertEquals(-1, ret);
+    }
+
+    @Test
+    public void shouldClearSourceFilesFromGitHubClientWhenCalled() throws BadLoginException {
+        GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
+        GitHubClient user = new GitHubClient(mockedConnection);
+        user.signIn("username", "password");
+        // create mock that returns a non empty HashMap, thus imitating finding at least one source file
+        Mockito.when(mockedConnection.fetchSourceFromPullRequest("owner", "repoName", 1, null, "username", "password")).thenReturn(new HashMap<String, String>(){
+            private static final long serialVersionUID = 1L;
+            {
+                put("test", "passed");
+            }
+        });
+
+        HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
+        // clear the source files
+        user.clearSourceFiles();
+        HashMap<String, String> storedFiles = user.getSourceFiles();
+        // check the files map is empty
+        assert(storedFiles.size() == 0);
     }
 }

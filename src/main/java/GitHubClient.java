@@ -98,7 +98,6 @@ public class GitHubClient {
         // if some source code was fetched then add it to the map of all source files
         if (source != null) {
             this.sourceFiles.putAll(source);
-
         }
 
         return source;

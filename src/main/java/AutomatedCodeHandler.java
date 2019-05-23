@@ -14,19 +14,19 @@ public class AutomatedCodeHandler {
         this.abstracter = abstracter;
     }
 
-    public SourceCode performLinting(SourceCode code) throws FormatterException {
+    public List<SourceCode> performLinting(List<SourceCode> code) throws FormatterException {
         return linter.lint(code);
     }
 
-    public List<Abstraction> performAbstraction(SourceCode code){
+    public List<Abstraction> performAbstraction(List<SourceCode> code){
         return abstracter.performAbstraction(code);
     }
 
-    public InspectionResults performInspection(SourceCode code){
+    public InspectionResults performInspection(List<SourceCode> code){
         return inspector.inspectCode(code);
     }
 
-    public InitialReviewResults performAutomatedReview(SourceCode code) throws FormatterException {
+    public InitialReviewResults performAutomatedReview(List<SourceCode> code) throws FormatterException {
         code = performLinting(code);
         List<Abstraction> abstractions = performAbstraction(code);
         InspectionResults inspectionResults = performInspection(code);

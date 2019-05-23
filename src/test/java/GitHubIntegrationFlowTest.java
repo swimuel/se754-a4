@@ -1,8 +1,10 @@
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.googlejavaformat.java.FormatterException;
 
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import user.Developer;
@@ -28,7 +30,7 @@ public class GitHubIntegrationFlowTest {
         HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch", mockedGenerator, dev);
         Mockito.verify(mockedConnection).fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch", "username", "password");
 
-        Mockito.verify(mockedGenerator).generateAndSendReview(Mockito.any(SourceCode.class), Mockito.any(Developer.class));
+        Mockito.verify(mockedGenerator).generateAndSendReview((Matchers.anyListOf(SourceCode.class)), Mockito.any(Developer.class));
 
     }
 
@@ -46,7 +48,7 @@ public class GitHubIntegrationFlowTest {
         HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch", mockedGenerator, dev);
         Mockito.verify(mockedConnection).fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch", "username", "password");
 
-        Mockito.verify(mockedGenerator, Mockito.never()).generateAndSendReview(Mockito.any(SourceCode.class), Mockito.any(Developer.class));
+        Mockito.verify(mockedGenerator, Mockito.never()).generateAndSendReview(Matchers.anyListOf(SourceCode.class), Mockito.any(Developer.class));
     }
 
 }

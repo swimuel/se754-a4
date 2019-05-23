@@ -7,6 +7,9 @@ import user.Developer;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReviewGeneratorTest {
 
     AutomatedCodeHandler ah;
@@ -26,7 +29,8 @@ public class ReviewGeneratorTest {
 
     @Test
     public void generateReviewPerformsAutomatedReviewAndInitialisesReviewHandler() throws FormatterException {
-        SourceCode code = new SourceCode("filename", "int x = 9;");
+        List<SourceCode> code = new ArrayList<SourceCode>();
+        code.add(new SourceCode("filename", "int x = 9;"));
         Developer author = new Developer();
         InitialReviewResults results = Mockito.mock(InitialReviewResults.class);
 
@@ -57,7 +61,8 @@ public class ReviewGeneratorTest {
     // ensure ReviewGenerator can automate the entire flow
     @Test
     public void testReviewGenerationAndSendingAllInOne() throws FormatterException {
-        SourceCode code = new SourceCode("filename", "int x = 9;");
+        List<SourceCode> code = new ArrayList<SourceCode>();
+        code.add(new SourceCode("filename", "int x = 9;"));
         Developer author = new Developer();
         rg.generateAndSendReview(code, author);
 

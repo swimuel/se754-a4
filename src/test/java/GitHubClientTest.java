@@ -6,6 +6,8 @@ import java.util.HashMap;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import user.Developer;
+
 public class GitHubClientTest {
     
     @Test
@@ -142,8 +144,10 @@ public class GitHubClientTest {
                 put("test", "passed");
             }
         });
+        ReviewGenerator mockedGenerator = Mockito.mock(ReviewGenerator.class);
+        Developer dev = new Developer();
 
-        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch");
+        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch", mockedGenerator, dev);
         Mockito.verify(mockedConnection).fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch", "username", "password");
 
         assertNotEquals(null, files);
@@ -153,7 +157,10 @@ public class GitHubClientTest {
     public void shouldReturnNullFromPullRequestFetchIfUserNotSignedIn() {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
-        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null);
+
+        ReviewGenerator mockedGenerator = Mockito.mock(ReviewGenerator.class);
+        Developer dev = new Developer();
+        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null, mockedGenerator, dev);
 
         // check did not make github request
         Mockito.verify(mockedConnection, Mockito.never()).fetchSourceFromPullRequest("owner", "repoName", 1, "testBranch", "username", "password");
@@ -173,7 +180,10 @@ public class GitHubClientTest {
             }
         });
 
-        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null);
+        ReviewGenerator mockedGenerator = Mockito.mock(ReviewGenerator.class);
+        Developer dev = new Developer();
+
+        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null, mockedGenerator, dev);
         HashMap<String, String> storedFiles = user.getSourceFiles();
 
         // check github connection was invoked 
@@ -188,8 +198,10 @@ public class GitHubClientTest {
         user.signIn("username", "password");
         // create mock that returns null, thus imitating finding no source files
         Mockito.when(mockedConnection.fetchSourceFromPullRequest("owner", "repoName", 1, null, "username", "password")).thenReturn(null);
+        ReviewGenerator mockedGenerator = Mockito.mock(ReviewGenerator.class);
+        Developer dev = new Developer();
 
-        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null);
+        HashMap<String, String> files = user.fetchSourceFromPullRequest("owner", "repoName", 1, null, mockedGenerator, dev);
         HashMap<String, String> storedFiles = user.getSourceFiles();
 
         // check github connection was invoked 

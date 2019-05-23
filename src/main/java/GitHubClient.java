@@ -128,14 +128,51 @@ public class GitHubClient {
      * @param commitMessage message to be included in the merge
      * 
      * @return 0 on success, -1 if user is not logged in, -2 if source is not automatically 
-     *         mergeable, -3 for a merge error
+     *         mergeable, throws MergeException on failure
      */
-    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) {
+    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) throws MergeException {
         if (this.username == null) {
             // user is not signed in
             return -1;
         }
         return this.gitHubConnection.mergeChanges(owner, repoName, pullRequestNo, commitMessage, this.username, this.password);
+    }
+
+    /**
+     * Puts a comment on the pull request with id of pullRequestNumber
+     * 
+     * @param comment       the string comment to add to the pull request
+     * @param owner         string owner of the repo
+     * @param repo          string repo name 
+     * @param pullRequestNo int id of the pull request
+     * 
+     * @return returns 0 on success, -1 if the user is not logged in, and -2 if there
+     *         is an exception 
+     */
+    public int createPullRequestComment(String comment, String owner, String repo, int pullRequestNo){
+        if(this.username == null){
+            return -1;
+        }
+
+        return this.gitHubConnection.createPullRequestComment(comment, owner, repo, pullRequestNo, this.username, this.password);
+    }
+
+    /**
+     * Used to create a comment with a code request change to a pull reqest with number pullRequestNo
+     * 
+     * @param owner         String owner of the repository 
+     * @param repo          String name of the repository 
+     * @param pullRequestNo int number of the pull request
+     * @param comment       String comment to add along with the change request.
+     * 
+     * @return returns 0 on success, -1 if user is not logged in, and -2 for an exception
+     */
+    public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment){
+        if(this.username ==  null){
+            return -1;
+        }
+
+        return this.gitHubConnection.createCodeChangeRequest(owner, repo, pullRequestNo, comment, this.username, this.password);
     }
 
     /**
@@ -171,6 +208,14 @@ public class GitHubClient {
      */
     public int getMostRecentPullRequestNo() {
         return this.mostRecentPullRequestNo;
+    }
+
+    /**
+     * Remove all of the currently stored source files
+     * from the hashmap
+     */
+    public void clearSourceFiles() {
+        this.sourceFiles.clear();
     }
 
 }

@@ -22,5 +22,4 @@ public class NonDeveloperReviewHandler {
     public void submitFeedback(Feedback feedback) {
         developerConnection.sendFeedback(feedback);
     }
-
 }

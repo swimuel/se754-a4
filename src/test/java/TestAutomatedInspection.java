@@ -21,8 +21,8 @@ public class TestAutomatedInspection {
     // test all three
     @Test
     public void fullReview(){
-        SourceCode lintedCode = new SourceCode("class test {}\n");
-        SourceCode code = new SourceCode("class test  { }");
+        SourceCode lintedCode = new SourceCode("filename", "class test {}\n");
+        SourceCode code = new SourceCode("filename", "class test  { }");
         InitialReviewResults results = null;
         try {
             results = ah.performAutomatedReview(code);
@@ -36,13 +36,13 @@ public class TestAutomatedInspection {
 
     @Test(expected = FormatterException.class)
     public void fullReviewError() throws FormatterException {
-        SourceCode originalCode = new SourceCode("int x = 1;");
+        SourceCode originalCode = new SourceCode("filename", "int x = 1;");
         InitialReviewResults results = ah.performAutomatedReview(originalCode);
     }
 
     @Test
     public void lintedCodeUsed(){
-        SourceCode code = new SourceCode("class test {}\n");
+        SourceCode code = new SourceCode("filename", "class test {}\n");
         try {
             InitialReviewResults results = ah.performAutomatedReview(code);
         } catch (FormatterException e) {
@@ -55,8 +55,8 @@ public class TestAutomatedInspection {
     // test linting
     @Test
     public void lintSourceCode(){
-        SourceCode lintedCode = new SourceCode("class test {}\n");
-        SourceCode originalCode = new SourceCode("class test  { }");
+        SourceCode lintedCode = new SourceCode("filename", "class test {}\n");
+        SourceCode originalCode = new SourceCode("filename", "class test  { }");
         SourceCode receivedCode = null;
         try {
             receivedCode = ah.performLinting(originalCode);
@@ -68,13 +68,13 @@ public class TestAutomatedInspection {
 
     @Test(expected = FormatterException.class)
     public void errorInSourceCode() throws FormatterException {
-        SourceCode originalCode = new SourceCode("int x = 1;");
+        SourceCode originalCode = new SourceCode("filename", "int x = 1;");
         SourceCode lintedCode = ah.performLinting(originalCode);
     }
 
     @Test
     public void alreadyLintedSourceCode(){
-        SourceCode originalCode = new SourceCode("class test {\n  int x = 1;\n}\n");
+        SourceCode originalCode = new SourceCode("filename", "class test {\n  int x = 1;\n}\n");
         SourceCode receivedLintedCode = null;
         try {
             receivedLintedCode = ah.performLinting(originalCode);
@@ -86,8 +86,8 @@ public class TestAutomatedInspection {
 
     @Test
     public void spacesOverTabs(){
-        SourceCode lintedCode = new SourceCode("class test {\n  int x = 0;\n}\n");
-        SourceCode originalCode = new SourceCode("class test {\n\tint x = 0;\n}\n");
+        SourceCode lintedCode = new SourceCode("filename", "class test {\n  int x = 0;\n}\n");
+        SourceCode originalCode = new SourceCode("filename", "class test {\n\tint x = 0;\n}\n");
         SourceCode receivedCode = null;
         try {
             receivedCode = ah.performLinting(originalCode);
@@ -99,8 +99,8 @@ public class TestAutomatedInspection {
 
     @Test
     public void spaceBetweenVarAssignment(){
-        SourceCode lintedCode = new SourceCode("class test {\n  int x = 1;\n}\n");
-        SourceCode originalCode = new SourceCode("class test{int x=1;}");
+        SourceCode lintedCode = new SourceCode("filename", "class test {\n  int x = 1;\n}\n");
+        SourceCode originalCode = new SourceCode("filename", "class test{int x=1;}");
         SourceCode receivedCode = null;
         try {
             receivedCode = ah.performLinting(originalCode);
@@ -113,7 +113,7 @@ public class TestAutomatedInspection {
     // test inspection
     @Test
     public void inspectCode(){
-        SourceCode code = new SourceCode("int x = 0;\n String y = \"useless part\"");
+        SourceCode code = new SourceCode("filename", "int x = 0;\n String y = \"useless part\"");
         ah.performInspection(code);
         Mockito.verify(inspector, Mockito.times(1)).inspectCode(code);
 
@@ -122,7 +122,7 @@ public class TestAutomatedInspection {
     // test abstraction
     @Test
     public void abstractCode(){
-        SourceCode code = new SourceCode("int x = 0;\n String y = \"useless part\"");
+        SourceCode code = new SourceCode("filename", "int x = 0;\n String y = \"useless part\"");
         ah.performAbstraction(code);
         Mockito.verify(abstracter, Mockito.times(1)).performAbstraction(code);
     }

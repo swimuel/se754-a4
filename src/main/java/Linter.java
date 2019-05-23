@@ -13,6 +13,6 @@ public class Linter {
         // returns a source code object of the linted source code
         String linted = null;
         linted = formatter.formatSource(sourceCode.getValue());
-        return new SourceCode(linted);
+        return new SourceCode(sourceCode.getName(), linted);
     }
 }

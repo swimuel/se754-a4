@@ -26,7 +26,7 @@ public class ReviewGeneratorTest {
 
     @Test
     public void generateReviewPerformsAutomatedReviewAndInitialisesReviewHandler() throws FormatterException {
-        SourceCode code = new SourceCode("int x = 9;");
+        SourceCode code = new SourceCode("filename", "int x = 9;");
         Developer author = new Developer();
         InitialReviewResults results = Mockito.mock(InitialReviewResults.class);
 
@@ -57,7 +57,7 @@ public class ReviewGeneratorTest {
     // ensure ReviewGenerator can automate the entire flow
     @Test
     public void testReviewGenerationAndSendingAllInOne() throws FormatterException {
-        SourceCode code = new SourceCode("int x = 9;");
+        SourceCode code = new SourceCode("filename", "int x = 9;");
         Developer author = new Developer();
         rg.generateAndSendReview(code, author);
 

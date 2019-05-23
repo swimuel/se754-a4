@@ -1,10 +1,16 @@
 public class SourceCode {
+    private String name;
     private String value;
-    public SourceCode(String value){
+    public SourceCode(String name, String value){
+        this.name = name;
         this.value = value;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
     public String getValue() {
-        return value;
+        return this.value;
     }
 }

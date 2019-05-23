@@ -1,4 +1,4 @@
 package inspection;
 
-public class Abstraction {
+public interface Abstraction {
 }

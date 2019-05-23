@@ -1,4 +1,4 @@
 package inspection;
 
-public class InspectionResults {
+public interface InspectionResults {
 }

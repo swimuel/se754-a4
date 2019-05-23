@@ -1,5 +1,8 @@
+package inspection;
+
 import java.util.ArrayList;
 import java.util.List;
+import common.SourceCode;
 
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;

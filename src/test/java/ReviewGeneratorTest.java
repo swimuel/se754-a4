@@ -1,7 +1,9 @@
 import com.google.googlejavaformat.java.FormatterException;
+import common.InitialReviewResults;
+import common.SourceCode;
+import inspection.AutomatedCodeHandler;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import user.Developer;
 

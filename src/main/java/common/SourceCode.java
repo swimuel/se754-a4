@@ -1,3 +1,5 @@
+package common;
+
 public class SourceCode {
     private String name;
     private String value;

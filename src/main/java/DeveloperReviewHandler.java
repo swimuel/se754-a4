@@ -1,3 +1,4 @@
+import common.InitialReviewResults;
 import user.Reviewer;
 
 import java.util.Collections;

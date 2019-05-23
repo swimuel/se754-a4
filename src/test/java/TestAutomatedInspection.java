@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.googlejavaformat.java.FormatterException;
+import common.InitialReviewResults;
+import common.SourceCode;
+import inspection.*;
 import org.junit.Before;
 import org.junit.Test;
 

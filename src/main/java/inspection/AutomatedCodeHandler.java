@@ -1,4 +1,8 @@
+package inspection;
+
 import com.google.googlejavaformat.java.FormatterException;
+import common.InitialReviewResults;
+import common.SourceCode;
 
 import java.util.List;
 

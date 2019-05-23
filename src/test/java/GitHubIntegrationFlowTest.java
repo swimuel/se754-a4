@@ -1,8 +1,8 @@
 import java.util.HashMap;
-import java.util.List;
 
 import com.google.googlejavaformat.java.FormatterException;
 
+import common.SourceCode;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -12,7 +12,7 @@ import user.Developer;
 public class GitHubIntegrationFlowTest {
 
     @Test
-    public void shouldStartReviewPorcessAfterFetchingSourceFromPullRequest() throws BadLoginException, FormatterException {
+    public void shouldStartReviewProcessAfterFetchingSourceFromPullRequest() throws BadLoginException, FormatterException {
         GitHubConnection mockedConnection = Mockito.mock(GitHubConnection.class);
         GitHubClient user = new GitHubClient(mockedConnection);
         user.signIn("username", "password");

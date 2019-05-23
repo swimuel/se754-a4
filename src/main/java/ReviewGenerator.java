@@ -1,6 +1,9 @@
 import java.util.List;
 
 import com.google.googlejavaformat.java.FormatterException;
+import common.InitialReviewResults;
+import common.SourceCode;
+import inspection.AutomatedCodeHandler;
 import user.Developer;
 
 public class ReviewGenerator {

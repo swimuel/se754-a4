@@ -91,8 +91,9 @@ public class DeveloperReviewHandler {
         Reviewer toAllocate = null;
         for (int i = 0; i < ranges.length; i++) {
             if (rand < ranges[i]) {
-                toAllocate = reviewers.get(i);
-                break;
+                if(toAllocate == null){
+                    toAllocate = reviewers.get(i);
+                }
             }
         }
 

@@ -1,3 +1,4 @@
 public interface Inspector {
-    InspectionResults inspectCode(SourceCode code);
+    InitialInspectionResults inspectCode(SourceCode code);
+    InspectionResults classifyResults(InitialInspectionResults results);
 }

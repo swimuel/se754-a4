@@ -1,12 +1,21 @@
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
+import common.Feedback;
+import common.InitialReviewResults;
+import common.UnauthorizedActionException;
+import dev.Database;
+import nondev.DeveloperConnection;
+import dev.DeveloperReviewHandler;
+import dev.NonDeveloperConnection;
+import nondev.NonDeveloperReviewHandler;
+import common.Review;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import user.Developer;
-import user.Reviewer;
+import common.user.Developer;
+import common.user.Reviewer;
 
 public class TestHighLevelReview {
     private DeveloperConnection developerConnection;
@@ -44,7 +53,7 @@ public class TestHighLevelReview {
     public void shouldStoreFeedbackOnceReviewSubmitted() {
         this.feedbackForm = nonDeveloperReviewHandler.performReview(comments, codeChanges);
         assertEquals(feedbackForm.getComments(), comments);
-        assertEquals(feedbackForm.getCodeChageReq(), codeChanges);
+        assertEquals(feedbackForm.getCodeChangeReq(), codeChanges);
     }
 
     @Test

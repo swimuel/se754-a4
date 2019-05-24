@@ -5,10 +5,15 @@ import java.util.HashMap;
 
 import com.google.googlejavaformat.java.FormatterException;
 
+import dev.ReviewGenerator;
+import dev.github.BadLoginException;
+import dev.github.GitHubClient;
+import dev.github.GitHubConnection;
+import dev.github.MergeException;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import user.Developer;
+import common.user.Developer;
 
 public class GitHubClientTest {
 
@@ -91,11 +96,11 @@ public class GitHubClientTest {
 
         HashMap<String, String> files = user.fetchSource("owner", "repoName", "src", null);
 
-        // dont bother contacting github if user is not signed in
+        // dont bother contacting github if common.user is not signed in
         Mockito.verify(mockedConnection, Mockito.never()).fetchSource("owner", "repoName", "src", null, "username",
                 "password");
 
-        // if the user has not signed in then the fetchSource call should return null
+        // if the common.user has not signed in then the fetchSource call should return null
         assertEquals(null, files);
     }
 
@@ -271,9 +276,9 @@ public class GitHubClientTest {
         // try the merge
         int ret = user.mergeChanges(owner, repoName, pullRequestNo, commitMessage);
 		
-		// check github request not made if user not signed in
+		// check github request not made if common.user not signed in
 		Mockito.verify(mockedConnection, Mockito.never()).mergeChanges(owner, repoName, pullRequestNo, commitMessage, "username", "password");
-        // if user is not logged in should return -1
+        // if common.user is not logged in should return -1
         assertEquals(-1, ret);
     }
 
@@ -334,10 +339,10 @@ public class GitHubClientTest {
 
         int ret = user.createPullRequestComment("test comment", "owner", "repo", 1);
 		
-		// check github request not made if user not signed in
+		// check github request not made if common.user not signed in
 		Mockito.verify(mockedConnection, Mockito.never()).createPullRequestComment("test comment", "owner", "repo", 1, "username", "password");
 		
-        // should return -1 if the user is not signed in
+        // should return -1 if the common.user is not signed in
         assertEquals(-1, ret);
     }
 
@@ -362,7 +367,7 @@ public class GitHubClientTest {
 
         int ret = user.createCodeChangeRequest("owner", "repo", 1, "Please change this");
 		
-		//check github request not made if user not signed in
+		//check github request not made if common.user not signed in
 		Mockito.verify(mockedConnection, Mockito.never()).createCodeChangeRequest("owner", "repo", 1, "Please change this", "username", "password");
 
         assertEquals(-1, ret);

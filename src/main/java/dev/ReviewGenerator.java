@@ -1,7 +1,14 @@
-import java.util.List;
+package dev;
 
 import com.google.googlejavaformat.java.FormatterException;
-import user.Developer;
+import common.InitialReviewResults;
+import common.Review;
+import common.SourceCode;
+import common.user.Developer;
+import common.user.UserAction;
+import dev.inspection.AutomatedCodeHandler;
+
+import java.util.List;
 
 public class ReviewGenerator {
     UserAction userAction;
@@ -24,7 +31,7 @@ public class ReviewGenerator {
 
     /**
      * Constructs a review based on the source code and author.
-     * Passes it to the user to perform allocation then sends it to the
+     * Passes it to the common.user to perform allocation then sends it to the
      * reviewer side of the tool.
      */
     public void generateAndSendReview(List<SourceCode> code, Developer author) throws FormatterException {

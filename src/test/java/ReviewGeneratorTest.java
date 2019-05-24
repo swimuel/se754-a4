@@ -1,9 +1,17 @@
 import com.google.googlejavaformat.java.FormatterException;
+import common.InitialReviewResults;
+import common.SourceCode;
+import dev.Database;
+import dev.DeveloperReviewHandler;
+import dev.ReviewGenerator;
+import dev.inspection.AutomatedCodeHandler;
+import dev.NonDeveloperConnection;
+import common.Review;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import user.Developer;
+import common.user.Developer;
+import common.user.UserAction;
 
 import static org.junit.Assert.assertEquals;
 
@@ -58,7 +66,7 @@ public class ReviewGeneratorTest {
         Mockito.verify(ndc, Mockito.times(1)).sendReview(review);
     }
 
-    // ensure ReviewGenerator can automate the entire flow
+    // ensure dev.ReviewGenerator can automate the entire flow
     @Test
     public void testReviewGenerationAndSendingAllInOne() throws FormatterException {
         List<SourceCode> code = new ArrayList<SourceCode>();

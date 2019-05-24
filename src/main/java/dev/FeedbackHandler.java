@@ -1,3 +1,10 @@
+package dev;
+
+import common.Feedback;
+import dev.github.GitHubClient;
+import dev.github.MergeException;
+import common.user.UserAction;
+
 public class FeedbackHandler {
     private NonDeveloperConnection ndc;
     private Feedback feedback;

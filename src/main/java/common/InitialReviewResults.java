@@ -1,3 +1,8 @@
+package common;
+
+import dev.inspection.Abstraction;
+import dev.inspection.InspectionResults;
+
 import java.util.List;
 
 public class InitialReviewResults {

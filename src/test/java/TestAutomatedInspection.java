@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.googlejavaformat.java.FormatterException;
+import common.InitialReviewResults;
+import common.SourceCode;
+import dev.inspection.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -126,7 +129,7 @@ public class TestAutomatedInspection {
         assertEquals(lintedCode.get(0).getValue(), receivedCode.get(0).getValue());
     }
 
-    // test inspection
+    // test dev.inspection
     @Test
     public void inspectCode(){
         List<SourceCode> code = new ArrayList<SourceCode>();

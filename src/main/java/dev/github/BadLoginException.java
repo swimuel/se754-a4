@@ -1,3 +1,4 @@
+package dev.github;
 
 public class BadLoginException extends Exception {
 

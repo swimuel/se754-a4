@@ -1,5 +1,8 @@
+package dev.inspection;
+
 import java.util.ArrayList;
 import java.util.List;
+import common.SourceCode;
 
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
@@ -16,8 +19,7 @@ public class Linter {
         // returns a source code object of the linted source code
         List<SourceCode> outCode = new ArrayList<SourceCode>();
         for(SourceCode sc : sourceCode){
-            String linted = null;
-            linted = formatter.formatSource(sc.getValue());
+            String linted = formatter.formatSource(sc.getValue());
             outCode.add(new SourceCode(sc.getName(), linted));
         }
         return outCode;

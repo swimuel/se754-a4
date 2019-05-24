@@ -1,4 +1,4 @@
-package inspection;
+package dev.inspection;
 
 import com.google.googlejavaformat.java.FormatterException;
 import common.InitialReviewResults;

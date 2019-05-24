@@ -1,3 +1,7 @@
+import common.Feedback;
+import nondev.DeveloperConnection;
+import common.Review;
+
 public class HighLevelGenerator {
     private DeveloperConnection developerConnection;
     private Review review;

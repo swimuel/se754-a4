@@ -1,4 +1,4 @@
-package inspection;
+package dev.inspection;
 
 public interface InspectionResults {
 }

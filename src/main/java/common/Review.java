@@ -1,3 +1,5 @@
+package common;
+
 import common.InitialReviewResults;
 import user.Reviewer;
 import user.Developer;

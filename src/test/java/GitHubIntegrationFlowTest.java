@@ -3,6 +3,9 @@ import java.util.HashMap;
 import com.google.googlejavaformat.java.FormatterException;
 
 import common.SourceCode;
+import dev.github.BadLoginException;
+import dev.github.GitHubClient;
+import dev.github.GitHubConnection;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;

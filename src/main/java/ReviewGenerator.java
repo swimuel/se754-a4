@@ -3,8 +3,13 @@ import java.util.List;
 import com.google.googlejavaformat.java.FormatterException;
 import common.InitialReviewResults;
 import common.SourceCode;
-import inspection.AutomatedCodeHandler;
+import dev.Database;
+import dev.DeveloperReviewHandler;
+import dev.inspection.AutomatedCodeHandler;
+import dev.NonDeveloperConnection;
+import common.Review;
 import user.Developer;
+import user.UserAction;
 
 public class ReviewGenerator {
     UserAction userAction;

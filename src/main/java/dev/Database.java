@@ -1,3 +1,6 @@
+package dev;
+
+import common.Review;
 import user.Reviewer;
 
 import java.util.List;

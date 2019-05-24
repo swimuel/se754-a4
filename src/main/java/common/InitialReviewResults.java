@@ -1,8 +1,7 @@
 package common;
 
-import common.SourceCode;
-import inspection.Abstraction;
-import inspection.InspectionResults;
+import dev.inspection.Abstraction;
+import dev.inspection.InspectionResults;
 
 import java.util.List;
 

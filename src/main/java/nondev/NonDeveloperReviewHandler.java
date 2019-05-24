@@ -1,3 +1,7 @@
+package nondev;
+
+import common.Review;
+
 public class NonDeveloperReviewHandler {
     private Review review;
     private DeveloperConnection developerConnection;

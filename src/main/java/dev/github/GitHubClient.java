@@ -1,3 +1,5 @@
+package dev.github;
+
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -88,7 +90,7 @@ public class GitHubClient {
      * @param repo                 String name of repository
      * @param pullRequestNo        int number representing the pull request
      * @param branch               String name of the branch to get the source from
-     * @param automatedCodeHandler used tp start the automatic code inspection
+     * @param automatedCodeHandler used tp start the automatic code dev.inspection
      *                             process after the code has been fetched
      * @param reviewGenerator      used to start the review process once the code is
      *                             fetched
@@ -99,7 +101,7 @@ public class GitHubClient {
      * @throws FormatterException
      */
     public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo,
-            String branch, ReviewGenerator reviewGenerator, Developer dev) throws FormatterException {
+                                                              String branch, ReviewGenerator reviewGenerator, Developer dev) throws FormatterException {
         if (this.username == null) {
             return null; // if user is not logged in can not get contents
         }
@@ -155,7 +157,7 @@ public class GitHubClient {
      * @param commitMessage message to be included in the merge
      * 
      * @return 0 on success, -1 if user is not logged in, -2 if source is not automatically 
-     *         mergeable, throws MergeException on failure
+     *         mergeable, throws dev.github.MergeException on failure
      */
     public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage) throws MergeException {
         if (this.username == null) {

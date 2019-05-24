@@ -1,11 +1,16 @@
 import com.google.googlejavaformat.java.FormatterException;
 import common.InitialReviewResults;
 import common.SourceCode;
-import inspection.AutomatedCodeHandler;
+import dev.Database;
+import dev.DeveloperReviewHandler;
+import dev.inspection.AutomatedCodeHandler;
+import dev.NonDeveloperConnection;
+import common.Review;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import user.Developer;
+import user.UserAction;
 
 import static org.junit.Assert.assertEquals;
 

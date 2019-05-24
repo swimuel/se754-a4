@@ -5,6 +5,10 @@ import java.util.HashMap;
 
 import com.google.googlejavaformat.java.FormatterException;
 
+import dev.github.BadLoginException;
+import dev.github.GitHubClient;
+import dev.github.GitHubConnection;
+import dev.github.MergeException;
 import org.junit.Test;
 import org.mockito.Mockito;
 

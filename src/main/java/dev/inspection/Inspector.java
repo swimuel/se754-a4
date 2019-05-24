@@ -1,4 +1,4 @@
-package inspection;
+package dev.inspection;
 
 import common.SourceCode;
 

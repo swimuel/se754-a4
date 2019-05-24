@@ -1,10 +1,12 @@
-import com.google.googlejavaformat.java.FormatterException;
+import common.Feedback;
+import dev.FeedbackHandler;
+import dev.github.GitHubClient;
+import dev.github.MergeException;
+import dev.NonDeveloperConnection;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import user.Developer;
-
-import java.util.ArrayList;
+import user.UserAction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

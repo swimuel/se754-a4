@@ -1,5 +1,6 @@
+package nondev;
+
 import common.Feedback;
-import nondev.DeveloperConnection;
 import common.Review;
 
 public class HighLevelGenerator {

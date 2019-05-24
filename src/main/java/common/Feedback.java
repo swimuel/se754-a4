@@ -1,13 +1,11 @@
 package common;
 
-import java.util.List;
-
 public class Feedback {
     private String comments;
-    private String codeChageReq;
+    private String codeChangeReq;
 
-    public Feedback(String comments, String codeChageReq) {
-        this.codeChageReq = codeChageReq;
+    public Feedback(String comments, String codeChangeReq) {
+        this.codeChangeReq = codeChangeReq;
         this.comments = comments;
     }
 
@@ -15,7 +13,7 @@ public class Feedback {
         return comments;
     }
 
-    public String getCodeChageReq() {
-        return codeChageReq;
+    public String getCodeChangeReq() {
+        return codeChangeReq;
     }
 }

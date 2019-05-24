@@ -3,8 +3,7 @@ package dev;
 import common.Feedback;
 import dev.github.GitHubClient;
 import dev.github.MergeException;
-import dev.NonDeveloperConnection;
-import user.UserAction;
+import common.user.UserAction;
 
 public class FeedbackHandler {
     private NonDeveloperConnection ndc;

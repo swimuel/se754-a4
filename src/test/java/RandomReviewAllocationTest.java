@@ -1,12 +1,13 @@
 import common.InitialReviewResults;
+import common.UnauthorizedActionException;
 import dev.Database;
 import dev.DeveloperReviewHandler;
 import common.Review;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import user.Developer;
-import user.Reviewer;
+import common.user.Developer;
+import common.user.Reviewer;
 
 import java.util.ArrayList;
 import java.util.List;

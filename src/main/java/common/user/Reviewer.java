@@ -1,4 +1,4 @@
-package user;
+package common.user;
 
 import java.util.UUID;
 

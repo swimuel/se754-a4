@@ -6,7 +6,7 @@ import dev.NonDeveloperConnection;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import user.UserAction;
+import common.user.UserAction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

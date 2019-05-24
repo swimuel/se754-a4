@@ -1,7 +1,7 @@
 package dev;
 
 import common.Review;
-import user.Reviewer;
+import common.user.Reviewer;
 
 import java.util.List;
 import java.util.UUID;

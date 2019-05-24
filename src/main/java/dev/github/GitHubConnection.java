@@ -1,5 +1,7 @@
 package dev.github;
 
+import dev.ReviewGenerator;
+
 import java.util.HashMap;
 
 public interface GitHubConnection {
@@ -12,7 +14,7 @@ public interface GitHubConnection {
      * @param password string github password
      * @throws BadLoginException if the username and password are incorrect
      */
-    public void authenticateUser(String username, String password) throws BadLoginException;
+    void authenticateUser(String username, String password) throws BadLoginException;
     
     /**
      * This method is called from the fetchSource method in the dev.github.GitHubClient class.
@@ -29,7 +31,7 @@ public interface GitHubConnection {
      * @return returns a hashmap with keys as the fully qualified file name of the files and values conatining the 
      * base64 encoded data of the file, returns null on error
      */
-    public HashMap<String, String> fetchSource(String owner, String repo, String path, String branch, String username, String password);
+    HashMap<String, String> fetchSource(String owner, String repo, String path, String branch, String username, String password);
 
     /**
      * This method is called from the fetchSourceFromPullReques method in the dev.github.GitHubClient class.
@@ -45,14 +47,14 @@ public interface GitHubConnection {
      * @return returns a hashmap with keys as the fully qualified file name of the files and values conatining the 
      *         base64 encoded data of the file, returns null on error
      */
-    public HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo,
+    HashMap<String, String> fetchSourceFromPullRequest(String owner, String repo, int pullRequestNo,
             String branch, String username, String password);
 
     /**
      * This method is called from the startListeningForPullRequests method in the dev.github.GitHubClient class.
      * Starts listening for pull requests at the repo called "owner/repo". Creates a swing worker so this
      * method returns immediately. Once a pull request is detected the worker will retrive the source and
-     * place it inside the user object. The swing worker will terminate once retieving source from one 
+     * place it inside the common.user object. The swing worker will terminate once retieving source from one
      * pull request.
      * 
      * @param user                     dev.github.GitHubClient to store the source that is retireved
@@ -66,7 +68,7 @@ public interface GitHubConnection {
      * 
      * @return returns 0 immediately after starting the swing worker 
      */
-    public int startListeningForPullRequests(GitHubClient user, String username, String password, String owner, String repo, int mostRecentPullRequestNo, ReviewGenerator reviewGenerator);
+    int startListeningForPullRequests(GitHubClient user, String username, String password, String owner, String repo, int mostRecentPullRequestNo, ReviewGenerator reviewGenerator);
 
     /**
      * This method is called from the mergeChanges method in the dev.github.GitHubClient class.
@@ -83,7 +85,7 @@ public interface GitHubConnection {
      * @return returns 0 if the code is succesfully merged, -2 if the merge is not possible, throws
      *         a dev.github.MergeException if there is an error
      */
-    public int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage, String username, String password) throws MergeException;
+    int mergeChanges(String owner, String repoName, int pullRequestNo, String commitMessage, String username, String password) throws MergeException;
 
     /**
      * This method is called from the createPullRequestComment method in the dev.github.GitHubClient class.
@@ -99,7 +101,7 @@ public interface GitHubConnection {
      * 
      * @return 0 on successfully posting the comment or -2 if there is an error
      */
-    public int createPullRequestComment(String comment, String owner, String repo, int pullRequestNo, String username, String password);
+    int createPullRequestComment(String comment, String owner, String repo, int pullRequestNo, String username, String password);
 
     /**
      * This method is called from the createCodeChangeRequest method in the dev.github.GitHubClient class.
@@ -112,10 +114,10 @@ public interface GitHubConnection {
      * @param pullRequestNo int number of the pull request
      * @param comment       string comment to be added along with the change request 
      * @param username      string github username
-     * @param passwrod      string github password
+     * @param password      string github password
      * 
      * @return 0 if the code change request is posted succesfully, or -2 if there is some error
      */
-    public int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment, String username, String password);
+    int createCodeChangeRequest(String owner, String repo, int pullRequestNo, String comment, String username, String password);
 
 }

@@ -1,8 +1,7 @@
 package common;
 
-import common.InitialReviewResults;
-import user.Reviewer;
-import user.Developer;
+import common.user.Reviewer;
+import common.user.Developer;
 import java.util.ArrayList;
 import java.util.List;
 

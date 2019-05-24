@@ -2,10 +2,11 @@ import common.Feedback;
 import common.InitialReviewResults;
 import nondev.DeveloperConnection;
 import common.Review;
+import nondev.HighLevelGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import user.Developer;
+import common.user.Developer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,7 +38,7 @@ public class HighLevelGeneratorTest {
     public void testCreateFeedbackStoresData() {
         this.feedback = this.highLevelGenerator.createFeedback(comments, codeChange);
         assertEquals(comments, this.feedback.getComments());
-        assertEquals(codeChange, this.feedback.getCodeChageReq());
+        assertEquals(codeChange, this.feedback.getCodeChangeReq());
     }
 
     @Test
@@ -54,7 +55,7 @@ public class HighLevelGeneratorTest {
 
         Feedback feedbackFlow = this.highLevelGenerator.createFeedback(comments, codeChange);
         assertEquals(comments, feedbackFlow.getComments());
-        assertEquals(codeChange, feedbackFlow.getCodeChageReq());
+        assertEquals(codeChange, feedbackFlow.getCodeChangeReq());
 
         this.highLevelGenerator.submitFeedback(feedbackFlow);
         Mockito.verify(developerConnection, Mockito.times(1)).sendFeedback(feedbackFlow);

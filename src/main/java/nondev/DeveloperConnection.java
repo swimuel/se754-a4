@@ -1,8 +1,9 @@
 package nondev;
 
+import common.Feedback;
 import common.Review;
 
 public interface DeveloperConnection {
-    public Review fetchReview();
-    public void sendFeedback(Feedback feedback);
+    Review fetchReview();
+    void sendFeedback(Feedback feedback);
 }

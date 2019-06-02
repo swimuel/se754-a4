@@ -49,5 +49,4 @@ public class DatabaseStoryRunner extends JUnitStories{
         String codeLocation = CodeLocations.codeLocationFromClass(this.getClass()).getFile();
         return new StoryFinder().findPaths(codeLocation, Collections.singletonList("**/AddReviewer.story"), new ArrayList<String>());
     }
-
 }

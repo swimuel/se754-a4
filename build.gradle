@@ -15,9 +15,9 @@ repositories {
 dependencies {
    compile 'org.slf4j:slf4j-api:1.7.12'
    testCompile 'junit:junit:4.12'
-   compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
    compile 'com.google.googlejavaformat:google-java-format:1.7'
+   testCompile 'org.jbehave:jbehave-core:4.0.5'
 }
 
 jacocoTestReport {

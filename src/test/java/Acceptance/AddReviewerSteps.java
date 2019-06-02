@@ -40,7 +40,7 @@ public class AddReviewerSteps {
     }
 
     @When("a developer assigns $reviewNo code review to the reviewer")
-    public void whenOneMoreReviewerIsAdded(){
+    public void whenOneMoreReviewerIsAdded(int reviewNo){
         database.addReviewer(review, rev);
     }
 

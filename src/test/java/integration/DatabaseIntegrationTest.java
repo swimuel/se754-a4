@@ -29,11 +29,6 @@ public class DatabaseIntegrationTest {
 
     private static MongoClient client = MongoClients.create(CONN_STRING);
 
-    @BeforeClass
-    public static void setup() {
-        // add fixture data here
-    }
-
     @AfterClass
     public static void cleanReviewers() {
         MongoDatabase db = client.getDatabase(DB_NAME);
@@ -59,10 +54,5 @@ public class DatabaseIntegrationTest {
         persistedReviewer = reviewers.find(eq("name", reviewerName)).first();
         assertEquals(reviewerName, persistedReviewer.get("name"));
         assertEquals(1, persistedReviewer.get("reviewCount"));
-    }
-
-    @Test
-    public void existingReviewerShouldBePersistedAndCountShouldBeIncremented() {
-
     }
 }

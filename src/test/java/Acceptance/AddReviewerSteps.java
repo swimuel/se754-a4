@@ -1,26 +1,49 @@
 package Acceptance;
 
+import common.Review;
 import common.user.Developer;
+import common.user.Reviewer;
+import dev.Database;
+import dev.MongoDatabaseClient;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 
-
 public class AddReviewerSteps {
 
-    @Given("there is $reviewersCount reviewers assigned to the code review")
-    public void givenThereIsOneReviewerAssigned(int reviewersCount){
+    Developer dev;
+    Database database;
+    Review review;
+    Reviewer rev;
 
+    private static final String DB_NAME = "se754-integration";
+    private static final String REVIEWER_COLLECTION = "reviewers";
+    private static final String CONN_STRING = "mongodb+srv://se754-g18:f7iyN%25ylRX3%40@cluster0-34zvj.mongodb.net/test?retryWrites=true&w=majority";
+    private static MongoClient client = MongoClients.create(CONN_STRING);
+
+    @Given("there is a reviewer that is assigned to $reviewCount code reviews")
+    public void givenThereIsOneReviewerAssigned(int reviewCount) {
+        dev = new Developer();
+        MongoDatabase mongodb = client.getDatabase(DB_NAME);
+        database = new MongoDatabaseClient(client, DB_NAME, REVIEWER_COLLECTION);
+        Reviewer rev = new Reviewer();
+        review = new Review(null, null);
     }
 
-    @When("a developer adds $addNo reviewers to the review")
-    public void whenOneMoreReviewerIsAdded(int addNo){
-
+    @When("a developer assigns $reviewNo code review to the reviewer")
+    public void whenOneMoreReviewerIsAdded(){
+        database.addReviewer(review, rev);
     }
 
-    @Then("there are $databaseCount reviewers assigned to the review")
-    public void thenThereAreTwoReviewersAssignedToTheReview(int $databaseCount){
-
+    @Then("there are $databaseCount reviews assigned to the reviewer")
+    public void thenThereAreTwoReviewersAssignedToTheReview(int databaseCount){
+        List<Reviewer> reviewers = database.getReviewers();
+        assertEquals(databaseCount, reviewers.get(0).getReviewCount());
     }
 
 }

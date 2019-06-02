@@ -58,7 +58,7 @@ public class DatabaseIntegrationTest {
 
         persistedReviewer = reviewers.find(eq("name", reviewerName)).first();
         assertEquals(reviewerName, persistedReviewer.get("name"));
-        assertEquals(0, persistedReviewer.get("reviewCount"));
+        assertEquals(1, persistedReviewer.get("reviewCount"));
     }
 
     @Test

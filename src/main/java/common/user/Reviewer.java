@@ -20,6 +20,10 @@ public class Reviewer extends User {
         this.reviewCount = reviewCount;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public int getReviewCount() {
         return this.reviewCount;
     }

@@ -10,6 +10,8 @@ import org.bson.Document;
 import java.util.List;
 import java.util.UUID;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public class MongoDatabaseClient implements Database{
 
     private MongoClient client;
@@ -34,7 +36,11 @@ public class MongoDatabaseClient implements Database{
 
     @Override
     public void persistReviewer(Reviewer reviewer) {
-        // TODO
+        Document dbReviewer = new Document();
+        dbReviewer.put("name", reviewer.getName());
+        dbReviewer.put("reviewCount", reviewer.getReviewCount());
+
+        this.reviewers.insertOne(dbReviewer);
     }
 
     @Override

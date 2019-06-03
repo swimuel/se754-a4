@@ -7,6 +7,17 @@ apply plugin: 'jacoco'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+sourceSets.test.resources.srcDir 'src/test/java'
+
+sourceSets {
+    main {
+        output.resourcesDir = "build/classes/main"
+    }
+    test {
+        output.resourcesDir = "build/classes/java/test"
+    }
+}
+
 repositories {
    jcenter()
    mavenCentral()

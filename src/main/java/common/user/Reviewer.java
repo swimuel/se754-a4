@@ -15,6 +15,12 @@ public class Reviewer extends User {
         this(UUID.randomUUID(), 0);
     }
 
+    public Reviewer(String name, int reviewCount) {
+        this();
+        this.name = name;
+        this.reviewCount = reviewCount;
+    }
+
     public Reviewer(UUID id, int reviewCount) {
         super(id);
         this.reviewCount = reviewCount;

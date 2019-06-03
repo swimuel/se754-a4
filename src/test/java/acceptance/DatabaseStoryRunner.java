@@ -47,6 +47,6 @@ public class DatabaseStoryRunner extends JUnitStories{
     @Override
     protected List<String> storyPaths() {
         String codeLocation = CodeLocations.codeLocationFromClass(this.getClass()).getFile();
-        return new StoryFinder().findPaths(codeLocation, Collections.singletonList("**/addReviewer.story"), new ArrayList<String>());
+        return new StoryFinder().findPaths(codeLocation, Collections.singletonList("**/AddReviewer.story"), new ArrayList<String>());
     }
 }
